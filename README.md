@@ -9,7 +9,7 @@ of the Xtend extension methods and a couple of entry methods, like `mock` and `s
 
 ## Usage
 
-```xtend
+```java
 import mockit.Mocked
 import org.junit.Test
 import static org.junit.Assert.*
