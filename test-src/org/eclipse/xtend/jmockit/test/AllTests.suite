@@ -1,0 +1,13 @@
+package org.eclipse.xtend.jmockit.test
+
+import org.eclipse.xtend.jmockit.test.expectations.*
+import org.eclipse.xtend.jmockit.test.simple.*
+
+# All tests
+## Common tests
+- "ExpectationsAPI without mock"
+- "Xtend-JMockit simple test"
+
+## Expectations tests
+- "Result of the method calls can be specified"
+- "returns() returns values, including Exception objects"
