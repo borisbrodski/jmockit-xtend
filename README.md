@@ -27,3 +27,63 @@ class MyTest {
 	}
 ```
 
+### Using result=
+
+The `result=` setter can be used to set one or more results
+or to throw an exception as a result of the mocked method call.
+
+```java
+mock [
+	service.methodReturningString
+	result = "Hello World!"
+	result = new NoMoreGreetingsException
+	result = "Ok, the last one"
+]
+
+assertThat(service.methodReturningString, is("Hello World!"))
+try {
+	service.methodReturningString
+	fail("Exception expected")
+} catch (NoMoreGreetingsException e) {}
+assertThat(service.methodReturningString, is("Ok, the last one"))
+```
+
+There are `resultInt=`, `resultLong=`, `resultShort=`, ... methods available to enforce the type casting
+and reduce the chance of the ClassCastException:
+
+```java
+mock [
+	service.methodReturningLong
+	result = 1L      // With postfix 'L'
+	resultLong = 1   // Without postfix 'L'
+]
+```
+
+### Using returns
+
+The `returns` method can be also used to set one or more results
+but can't be used to throw an exception as a result of the mocked method call.
+For further information consult the JMockit documentation. (e. g. http://jmockit.googlecode.com/svn/trunk/www/tutorial/BehaviorBasedTesting.html) 
+
+```java
+mock [
+	service.methodReturningString
+	returns("Hello", "World!")
+	returns("Ok, the last one")
+]
+
+assertThat(service.methodReturningString, is("Hello"))
+assertThat(service.methodReturningString, is("World!"))
+assertThat(service.methodReturningString, is("Ok, the last one"))
+```
+
+There are also `returnsInt=`, `returnsLong=`, `returnsShort=`, ... methods available to enforce the type casting
+and reduce the chance of the ClassCastException:
+
+```java
+mock [
+	service.methodReturningLong
+	returns(1L)    // With postfix 'L'
+	returns(1)     // Without postfix 'L'
+]
+```

@@ -126,8 +126,25 @@ describe "returns() returns values, including Exception objects" {
 		mock [
 			expectationsAPI.returnShort
 			returns(1 as short)
-			returns(2 as short, 3as short)
+			returns(2 as short, 3 as short)
 			returns(4 as short, 5 as short, 6 as short)
+		]
+		
+		expectationsAPI.returnShort => 1 as short
+		expectationsAPI.returnShort => 2 as short
+		expectationsAPI.returnShort => 3 as short
+		expectationsAPI.returnShort => 4 as short
+		expectationsAPI.returnShort => 5 as short
+		expectationsAPI.returnShort => 6 as short
+		expectationsAPI.returnShort throws UnexpectedInvocation
+	}
+	
+	fact "Using multiple returnsShort() (type: short)" {
+		mock [
+			expectationsAPI.returnShort
+			returnsShort(1 as short)
+			returnsShort(2 as short, 3 as short)
+			returnsShort(4 as short, 5 as short, 6 as short)
 		]
 		
 		expectationsAPI.returnShort => 1 as short
@@ -156,95 +173,156 @@ describe "returns() returns values, including Exception objects" {
 		expectationsAPI.returnByte throws UnexpectedInvocation
 	}
 	
-	fact "Using multiple returns() (type: float)" {
-		mock [
-			expectationsAPI.returnFloat
-			returns(1 as float)
-			returns(1.1 as float, 3 as float)
-			returns(4.5 as float, 4.6 as float, 6 as float)
-		]
-		
-		expectationsAPI.returnFloat => 1 as float
-		expectationsAPI.returnFloat => 1.1 as float
-		expectationsAPI.returnFloat => 3 as float
-		expectationsAPI.returnFloat => 4.5 as float
-		expectationsAPI.returnFloat => 4.6 as float
-		expectationsAPI.returnFloat => 6 as float
-		expectationsAPI.returnFloat throws UnexpectedInvocation
-	}
-	
-	
-	/*
-	fact "Using multiple result= (type: short)" {
-		mock [
-			expectationsAPI.returnShort
-			result = 321 as short
-			result = new IllegalAccessError
-		]
-		
-		expectationsAPI.returnShort => 321 as short
-		expectationsAPI.returnShort throws IllegalAccessError
-		expectationsAPI.returnShort throws UnexpectedInvocation
-	}
-	
-	fact "Using multiple result= (type: byte)" {
+	fact "Using multiple returnsByte() (type: byte)" {
 		mock [
 			expectationsAPI.returnByte
-			result = 42 as byte
-			result = new IllegalAccessError
+			returnsByte(1 as byte)
+			returnsByte(2 as byte, 3 as byte)
+			returnsByte(4 as byte, 5 as byte, 6 as byte)
 		]
 		
-		expectationsAPI.returnByte => 42 as byte
-		expectationsAPI.returnByte throws IllegalAccessError
+		expectationsAPI.returnByte => 1 as byte
+		expectationsAPI.returnByte => 2 as byte
+		expectationsAPI.returnByte => 3 as byte
+		expectationsAPI.returnByte => 4 as byte
+		expectationsAPI.returnByte => 5 as byte
+		expectationsAPI.returnByte => 6 as byte
 		expectationsAPI.returnByte throws UnexpectedInvocation
 	}
 	
-	fact "Using multiple result= (type: float)" {
+	fact "Using multiple returns() (type: float)" {
 		mock [
 			expectationsAPI.returnFloat
-			result = 31.443f
-			result = new IllegalAccessError
+			returns(1f)
+			returns(1.1f, 3f)
+			returns(4.5f, 4.6f, 6f)
 		]
 		
-		expectationsAPI.returnFloat => 31.443f
-		expectationsAPI.returnFloat throws IllegalAccessError
+		expectationsAPI.returnFloat => 1f
+		expectationsAPI.returnFloat => 1.1f
+		expectationsAPI.returnFloat => 3f
+		expectationsAPI.returnFloat => 4.5f
+		expectationsAPI.returnFloat => 4.6f
+		expectationsAPI.returnFloat => 6f
 		expectationsAPI.returnFloat throws UnexpectedInvocation
 	}
 	
-	fact "Using multiple result= (type: double)" {
+	fact "Using multiple returnsFloat() (type: float)" {
 		mock [
-			expectationsAPI.returnDouble
-			result = 321.332
-			result = new IllegalAccessError
+			expectationsAPI.returnFloat
+			returnsFloat(1)
+			returnsFloat(1.1f, 3)
+			returnsFloat(4.5f, 4.6f, 6)
 		]
 		
-		expectationsAPI.returnDouble => 321.332
-		expectationsAPI.returnDouble throws IllegalAccessError
+		expectationsAPI.returnFloat => 1f
+		expectationsAPI.returnFloat => 1.1f
+		expectationsAPI.returnFloat => 3f
+		expectationsAPI.returnFloat => 4.5f
+		expectationsAPI.returnFloat => 4.6f
+		expectationsAPI.returnFloat => 6f
+		expectationsAPI.returnFloat throws UnexpectedInvocation
+	}
+	
+	fact "Using multiple returns() (type: double)" {
+		mock [
+			expectationsAPI.returnDouble
+			returns(1d)
+			returns(1.1, 3d)
+			returns(4.5, 4.6, 6d)
+		]
+		
+		expectationsAPI.returnDouble => 1d
+		expectationsAPI.returnDouble => 1.1
+		expectationsAPI.returnDouble => 3d
+		expectationsAPI.returnDouble => 4.5
+		expectationsAPI.returnDouble => 4.6
+		expectationsAPI.returnDouble => 6d
 		expectationsAPI.returnDouble throws UnexpectedInvocation
 	}
 	
-	fact "Using multiple result= (type: boolean)" {
+	fact "Using multiple returnsDouble() (type: double)" {
+		mock [
+			expectationsAPI.returnDouble
+			returnsDouble(1)
+			returnsDouble(1.1, 3)
+			returnsDouble(4.5, 4.6, 6)
+		]
+		
+		expectationsAPI.returnDouble => 1d
+		expectationsAPI.returnDouble => 1.1
+		expectationsAPI.returnDouble => 3d
+		expectationsAPI.returnDouble => 4.5
+		expectationsAPI.returnDouble => 4.6
+		expectationsAPI.returnDouble => 6d
+		expectationsAPI.returnDouble throws UnexpectedInvocation
+	}
+	
+	fact "Using multiple returns() (type: boolean)" {
 		mock [
 			expectationsAPI.returnBoolean
-			result = true
-			result = new IllegalAccessError
+			returns(true)
+			returns(true, false)
+			returns(false, true, false)
 		]
 		
 		expectationsAPI.returnBoolean => true
-		expectationsAPI.returnBoolean throws IllegalAccessError
+		expectationsAPI.returnBoolean => true
+		expectationsAPI.returnBoolean => false
+		expectationsAPI.returnBoolean => false
+		expectationsAPI.returnBoolean => true
+		expectationsAPI.returnBoolean => false
 		expectationsAPI.returnBoolean throws UnexpectedInvocation
 	}
 	
-	fact "Using multiple result= (type: char)" {
+	fact "Using multiple returnsBoolean() (type: boolean)" {
 		mock [
-			expectationsAPI.returnCharacter
-			result = 'x'.charAt(0)
-			result = new IllegalAccessError
+			expectationsAPI.returnBoolean
+			returnsBoolean(true)
+			returnsBoolean(false, true)
+			returnsBoolean(true, false, true)
 		]
 		
-		expectationsAPI.returnCharacter.toString => 'x'
-		expectationsAPI.returnCharacter throws IllegalAccessError
+		expectationsAPI.returnBoolean => true
+		expectationsAPI.returnBoolean => false
+		expectationsAPI.returnBoolean => true
+		expectationsAPI.returnBoolean => true
+		expectationsAPI.returnBoolean => false
+		expectationsAPI.returnBoolean => true
+		expectationsAPI.returnBoolean throws UnexpectedInvocation
+	}
+	
+	fact "Using multiple returns() (type: char)" {
+		mock [
+			expectationsAPI.returnCharacter
+			returns('a'.charAt(0))
+			returns('b'.charAt(0), 'c'.charAt(0))
+			returns('d'.charAt(0), 'e'.charAt(0), 'f'.charAt(0))
+		]
+		
+		expectationsAPI.returnCharacter => 'a'.charAt(0)
+		expectationsAPI.returnCharacter => 'b'.charAt(0)
+		expectationsAPI.returnCharacter => 'c'.charAt(0)
+		expectationsAPI.returnCharacter => 'd'.charAt(0)
+		expectationsAPI.returnCharacter => 'e'.charAt(0)
+		expectationsAPI.returnCharacter => 'f'.charAt(0)
 		expectationsAPI.returnCharacter throws UnexpectedInvocation
 	}
-	*/
+	
+	fact "Using multiple returnsCharacter() (type: char)" {
+		mock [
+			expectationsAPI.returnCharacter
+			returnsChar('a'.charAt(0))
+			returnsChar('b'.charAt(0), 'c'.charAt(0))
+			returnsChar('d'.charAt(0), 'e'.charAt(0), 'f'.charAt(0))
+		]
+		
+		expectationsAPI.returnCharacter => 'a'.charAt(0)
+		expectationsAPI.returnCharacter => 'b'.charAt(0)
+		expectationsAPI.returnCharacter => 'c'.charAt(0)
+		expectationsAPI.returnCharacter => 'd'.charAt(0)
+		expectationsAPI.returnCharacter => 'e'.charAt(0)
+		expectationsAPI.returnCharacter => 'f'.charAt(0)
+		expectationsAPI.returnCharacter throws UnexpectedInvocation
+	}
 }
