@@ -220,5 +220,10 @@ public class JMockitExtension {
     	}
     	return objectArray;
     }
+    
+    public static void setTimes(Expectations expectations, int times) throws Exception {
+        ActiveInvocations.times(times);
+    }
+
 
 }
