@@ -5,7 +5,7 @@ import mockit.Mocked
 import static extension org.eclipse.xtend.jmockit.JMockitExtension.*
 import mockit.internal.UnexpectedInvocation
 
-describe "Result of the method calls can be specified" {
+describe "Result of the method calls can be specified with result setter" {
 	@Mocked
 	ExpectationsAPI expectationsAPI
 	 
@@ -16,6 +16,22 @@ describe "Result of the method calls can be specified" {
 		]
 		
 		expectationsAPI.returnString => "My String"
+	}
+	
+	fact "Using multiple result= (type: void)" {
+		mock [
+			expectationsAPI.returnVoid
+			result = null
+			result = new IllegalAccessError
+			result = new IllegalStateException
+			result = null
+		]
+		
+		expectationsAPI.returnVoid
+		expectationsAPI.returnVoid throws IllegalAccessError
+		expectationsAPI.returnVoid throws IllegalStateException
+		expectationsAPI.returnVoid
+		expectationsAPI.returnString throws UnexpectedInvocation
 	}
 	
 	fact "Using multiple result= (type: String)" {

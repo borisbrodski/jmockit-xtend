@@ -4,6 +4,9 @@ public class ExpectationsAPI {
 	public ExpectationsAPI returnSelf() {
 		throw new RuntimeException("Not implemented");
 	}
+	public void returnVoid() {
+		throw new RuntimeException("Not implemented");
+	}
 	public String returnString() {
 		throw new RuntimeException("Not implemented");
 	}

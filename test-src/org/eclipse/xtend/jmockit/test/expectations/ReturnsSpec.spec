@@ -4,7 +4,7 @@ import mockit.Mocked
 import static extension org.eclipse.xtend.jmockit.JMockitExtension.*
 import mockit.internal.UnexpectedInvocation
 
-describe "returns() returns values, including Exception objects" {
+describe "Result of the method calls can be specified with returns method" {
 	@Mocked
 	ExpectationsAPI expectationsAPI
 	 
@@ -15,6 +15,18 @@ describe "returns() returns values, including Exception objects" {
 		]
 		
 		expectationsAPI.returnString => "My String"
+	}
+	
+	fact "Using multiple returns() (type: void)" {
+		mock [
+			expectationsAPI.returnVoid
+			returns(null)
+			returns(null)
+		]
+		
+		expectationsAPI.returnVoid
+		expectationsAPI.returnVoid
+		expectationsAPI.returnString throws UnexpectedInvocation
 	}
 	
 	fact "Using multiple returns() (type: String)" {

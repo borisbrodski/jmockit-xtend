@@ -132,7 +132,12 @@ public class JMockitExtension {
     	returns(expectations, result, toObjectArray(results));
     }
     
-    
+    @SuppressWarnings("unchecked")
+	public static < T > T onInstance(Expectations expectations, T mockedInstance) throws Exception {
+        Method method = Expectations.class.getSuperclass().getDeclaredMethod("onInstance", Object.class);
+        method.setAccessible(true);
+        return (T) method.invoke(expectations, mockedInstance);
+    }
 
     private static Object[] toObjectArray(int[] values) {
     	if (values == null) {
