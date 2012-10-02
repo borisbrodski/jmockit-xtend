@@ -225,5 +225,8 @@ public class JMockitExtension {
         ActiveInvocations.times(times);
     }
 
+    public static void setMaxTimes(Expectations expectations, int maxTimes) throws Exception {
+        ActiveInvocations.maxTimes(maxTimes);
+    }
 
 }

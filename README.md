@@ -59,7 +59,9 @@ mock [
 ]
 ```
 
-### Using returns
+JMockit Tutorial: http://jmockit.googlecode.com/svn/trunk/www/tutorial/BehaviorBasedTesting.html#results
+
+### Using returns()
 
 The `returns` method can be also used to set one or more results
 but can't be used to throw an exception as a result of the mocked method call.
@@ -87,3 +89,47 @@ mock [
 	returns(1)     // Without postfix 'L'
 ]
 ```
+
+JMockit Tutorial: http://jmockit.googlecode.com/svn/trunk/www/tutorial/BehaviorBasedTesting.html#results
+
+### Using onInstance()
+
+The `onInstance` method can be used to restrict an extected call to a single instance of a mocked class.
+
+```java
+mock [
+	instance2.callAcceptedOnAllInstances()
+	onInstance(instance2).callAcceptedOnlyOnInstance2()
+]
+```
+
+Tutorial: http://jmockit.googlecode.com/svn/trunk/www/tutorial/BehaviorBasedTesting.html#onInstance
+
+
+### Using times=
+
+The `times=` (or setTimes()) setter specifies the number of the expected calls to the mocked method.
+
+```java
+mock [
+	service.sendEmail()
+	times = 3
+]
+``` 
+
+JMockit Tutorial: http://jmockit.googlecode.com/svn/trunk/www/tutorial/BehaviorBasedTesting.html#constraints
+
+
+### Using maxTimes=
+
+The `maxTimes=` (or setMaxTimes()) setter specifies the maximal number of the expected calls to the mocked method.
+
+```java
+mock [
+	service.sendEmail()
+	maxTimes = 5
+]
+``` 
+
+JMockit Tutorial: http://jmockit.googlecode.com/svn/trunk/www/tutorial/BehaviorBasedTesting.html#constraints
+
