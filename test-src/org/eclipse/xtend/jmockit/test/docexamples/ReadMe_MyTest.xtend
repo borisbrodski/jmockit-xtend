@@ -1,9 +1,9 @@
 package org.eclipse.xtend.jmockit.test.docexamples
 
-import mockit.Mocked
 import org.junit.Test
-import static org.junit.Assert.*
+
 import static org.hamcrest.core.Is.*
+import static org.junit.Assert.*
 
 import static extension org.eclipse.xtend.jmockit.JMockitExtension.*
 

@@ -223,7 +223,33 @@ stub [
 ]
 ```
 
+### Static parameter matching with with*() methods
+
+All JMockit with*() methods are supported:
+
+* [x] with(Object)
+* [x] with(Delegate<T>)  Only with explicit casting
+* [x] with(T, Object)
+* [x] withAny(T)
+* [ ] withCapture()
+* [ ] withCapture(List<T>)
+* [ ] withEqual(double, double)
+* [ ] withEqual(float, double)
+* [ ] withEqual(T)
+* [ ] withInstanceLike(T)
+* [ ] withInstanceOf(Class<T>)
+* [ ] withMatch(T)
+* [ ] withNotEqual(T)
+* [ ] withNotNull()
+* [ ] withNull()
+* [ ] withPrefix(T)
+* [ ] withSameInstance(T)
+* [ ] withSubstring(T)
+* [ ] withSuffix(T)
+
 ### Dynamic parameter matching with `matching*()`
+
+
 
 ### TODO
 

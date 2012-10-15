@@ -1,10 +1,9 @@
 package org.eclipse.xtend.jmockit.test.expectations
 
-
 import mockit.Mocked
 
 import static extension org.eclipse.xtend.jmockit.JMockitExtension.*
-import mockit.internal.UnexpectedInvocation
+import static extension org.jnario.lib.Should.*
 
 describe "Result of the method calls can be specified with a dynamic result setter" {
 	@Mocked

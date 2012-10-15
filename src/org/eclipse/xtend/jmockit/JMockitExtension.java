@@ -1,16 +1,25 @@
 package org.eclipse.xtend.jmockit;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.Arrays;
+import java.util.Collections;
 
 import mockit.Delegate;
 import mockit.Expectations;
+import mockit.Invocation;
 import mockit.NonStrictExpectations;
 import mockit.internal.expectations.RecordPhase;
+import mockit.internal.expectations.argumentMatching.AlwaysTrueMatcher;
 import mockit.internal.expectations.argumentMatching.ArgumentMatcher;
 import mockit.internal.expectations.argumentMatching.EqualityMatcher;
 import mockit.internal.expectations.argumentMatching.HamcrestAdapter;
+import mockit.internal.expectations.argumentMatching.ReflectiveMatcher;
 import mockit.internal.expectations.transformation.ActiveInvocations;
+import mockit.internal.util.DefaultValues;
 
+import org.eclipse.xtext.xbase.lib.IntegerExtensions;
 import org.eclipse.xtext.xbase.lib.Functions.Function0;
 import org.eclipse.xtext.xbase.lib.Functions.Function1;
 import org.eclipse.xtext.xbase.lib.Functions.Function2;
@@ -18,6 +27,7 @@ import org.eclipse.xtext.xbase.lib.Functions.Function3;
 import org.eclipse.xtext.xbase.lib.Functions.Function4;
 import org.eclipse.xtext.xbase.lib.Functions.Function5;
 import org.eclipse.xtext.xbase.lib.Functions.Function6;
+import org.eclipse.xtext.xbase.lib.IterableExtensions;
 import org.eclipse.xtext.xbase.lib.Procedures.Procedure1;
 
 public class JMockitExtension {
@@ -270,6 +280,12 @@ public class JMockitExtension {
     	return false;
     }
     
+    @SuppressWarnings("unchecked")
+	public static <T> T with(Expectations expectations, Delegate<T> delegateObjectWithInvocationHandlerMethod)
+    {
+       return (T)invokeOnInvocation(expectations, "with", new Class<?>[] {Delegate.class}, delegateObjectWithInvocationHandlerMethod);
+    }
+
     public static < T > T with(Expectations expectations, T t) throws Exception {
         addExpectationArgumentMatcher(expectations, new EqualityMatcher(t));
         return t;
@@ -307,6 +323,34 @@ public class JMockitExtension {
     public static boolean withBoolean(Expectations expectations, boolean t) throws Exception {
     	addExpectationArgumentMatcher(expectations, new EqualityMatcher(t));
     	return false;
+    }
+
+    public static <T> T with(Expectations expectations, T argValue, Object argumentMatcher) throws Exception {
+    	addExpectationHamcrestMatcher(expectations, argumentMatcher);
+        return argValue;
+    }
+
+    private static Object invokeOnInvocation(Expectations expectations, String name, Class<?>[] types, Object ... parameters) {
+    	Class<? super Expectations> invocationsClass = Expectations.class.getSuperclass();
+    	try {
+			Method method = invocationsClass.getDeclaredMethod(name, types);
+	    	method.setAccessible(true);
+	    	return method.invoke(expectations, parameters);
+    	} catch (Exception exception) {
+    		StringBuilder stringBuilder = new StringBuilder();
+    		for (Class<?> type : types) {
+				if (stringBuilder.length() > 0) {
+					stringBuilder.append(", ");
+				}
+				stringBuilder.append(type.getCanonicalName());
+			}
+    		throw new RuntimeException("Error invoking method " +  invocationsClass.getCanonicalName() + "." + name + "(" + stringBuilder + ")", exception);
+    	}
+    }
+    
+    public static <T> T withAny(Expectations expectations, T arg) throws Exception {
+       getCurrectExpectationsPhase(expectations).addArgMatcher(AlwaysTrueMatcher.INSTANCE);
+       return arg;
     }
 
     private static < T > void addExpectationArgumentMatcher(Expectations expectations, ArgumentMatcher matcher) throws Exception {
