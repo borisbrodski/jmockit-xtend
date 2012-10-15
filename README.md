@@ -27,7 +27,43 @@ class MyTest {
 	}
 ```
 
-### Using result=
+### Using `mock []`
+
+The `mock []` method is an alias to the JMockit `new `[Expectations](http://jmockit.googlecode.com/svn/trunk/www/javadoc/mockit/Expectations.html)()`{{ ... }}`
+block, which is a strict by default.
+
+```java
+mock [
+    // Strict expectations
+    // - default: times = 1
+    // - order is important
+	service.call1
+	service.call2("x")
+	service.call3(1, 2)
+]
+```
+
+JMockit Tutorial: http://jmockit.googlecode.com/svn/trunk/www/tutorial/BehaviorBasedTesting.html#strictness
+
+### Using `stub []`
+
+The `stub []` method is an alias to the JMockit `new `[NonStrictExpectations](http://jmockit.googlecode.com/svn/trunk/www/javadoc/mockit/NonStrictExpectations.html)()`{{ ... }}`
+block, which is a non-strict by default.
+
+```java
+stub [
+    // Non-strict expectations
+    // - default: times = infinity
+    // - order is't important
+	service.call1
+	service.call2("x")
+	service.call3(1, 2)
+]
+```
+
+JMockit Tutorial: http://jmockit.googlecode.com/svn/trunk/www/tutorial/BehaviorBasedTesting.html#strictness
+
+### Using `result=`
 
 The `result=` setter can be used to set one or more results
 or to throw an exception as a result of the mocked method call.
@@ -61,7 +97,7 @@ mock [
 
 JMockit Tutorial: http://jmockit.googlecode.com/svn/trunk/www/tutorial/BehaviorBasedTesting.html#results
 
-### Using returns()
+### Using `returns()`
 
 The `returns` method can be also used to set one or more results
 but can't be used to throw an exception as a result of the mocked method call.
@@ -92,7 +128,7 @@ mock [
 
 JMockit Tutorial: http://jmockit.googlecode.com/svn/trunk/www/tutorial/BehaviorBasedTesting.html#results
 
-### Using onInstance()
+### Using `onInstance()`
 
 The `onInstance` method can be used to restrict an extected call to a single instance of a mocked class.
 
@@ -106,7 +142,7 @@ mock [
 Tutorial: http://jmockit.googlecode.com/svn/trunk/www/tutorial/BehaviorBasedTesting.html#onInstance
 
 
-### Using times=
+### Using `times=`
 
 The `times=` (or setTimes()) setter specifies the number of the expected calls to the mocked method.
 
@@ -120,7 +156,7 @@ mock [
 JMockit Tutorial: http://jmockit.googlecode.com/svn/trunk/www/tutorial/BehaviorBasedTesting.html#constraints
 
 
-### Using maxTimes=
+### Using `maxTimes=`
 
 The `maxTimes=` (or setMaxTimes()) setter specifies the maximal number of the expected calls to the mocked method.
 
@@ -133,3 +169,54 @@ mock [
 
 JMockit Tutorial: http://jmockit.googlecode.com/svn/trunk/www/tutorial/BehaviorBasedTesting.html#constraints
 
+### Simple parameter matching with `any()` and `with()`
+
+The `any()`, `anyInt()`, `anyLong()`, ... and `with()`, `withInt()`, `withLong()`, ... extension methods are used to
+statically match the parameter of the mocked method.
+
+**WARNING**: Unlike JMockit API, you have to wrap the concrete values within `with*()` for every invocation,
+where one of the `any*()' methods are used.
+
+```java
+stub [
+	service.max(1, 2)            // ok    - no use of any()
+	service.max(anyInt, with(3)) // ok    - using with() for the values
+	service.max(anyInt, 3)          // ERROR - any() used, but the values without with()
+	
+	stringBuilder.append(anyChar)        // Match java.lang.StringBuilder.append(char) 
+	stringBuilder.append(with(3.3))      // Match java.lang.StringBuilder.append(double) 
+	stringBuilder.append(withFloat(3.3)) // Match java.lang.StringBuilder.append(float) 
+]
+``` 
+
+**WARNING**: Unlike JMockit API, there are `any()` extension methods, that has the generic definition:
+```java
+public static < T > T any(Expectations expectations) throws Exception {
+    ...
+    return null;
+}
+```
+
+As a result, the `any()` extension method can be used for all kind of parameters without casting. The down side of
+this method is, that it produces a NullPointerException each time it used with primitive type.
+
+```java
+stub [
+	service.max(withInt(1), any)            // NullPointerException: Xtend call any.intValue() where any == null
+	service.max(withInt(1), anyInt)         // ok: anyInt == (int)0
+]
+```
+
+### TODO
+
+* Specifying default results
+* Iterated expectations
+
+* Explicit verification
+* Accessing private fields, methods and constructors
+* Dynamic partial mocking
+* Cascading mocks
+* Capturing internal instances of mocked types
+* Automatic instantiation and injection of tested classes
+* Reusing expectation and verification blocks
+* State-based testing with JMockit

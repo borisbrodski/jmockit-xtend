@@ -2,6 +2,7 @@ package org.eclipse.xtend.jmockit.test
 
 import org.eclipse.xtend.jmockit.test.expectations.*
 import org.eclipse.xtend.jmockit.test.simple.*
+import org.eclipse.xtend.jmockit.test.expectations.*
 
 # All tests
 ## Common tests
@@ -9,8 +10,10 @@ import org.eclipse.xtend.jmockit.test.simple.*
 - "Xtend-JMockit simple test"
 
 ## Expectations tests
+- "onInstance extension allows differentiate between single instances"
 - "Result of the method calls can be specified with result setter"
 - "Result of the method calls can be specified with returns method"
-- "onInstance extension allows differentiate between single instances"
-- "SetTimes sets the count of the method invocations"
 - "SetMaxTimes sets the maximal count of the method invocations"
+- "SetTimes sets the count of the method invocations"
+- "Simple parameter matching with any() and with()"
+- "stub behaves like NonStrictExpectations"
