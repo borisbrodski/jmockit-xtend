@@ -209,6 +209,8 @@ stub [
 
 ### TODO
 
+* README - summarize differences to the JMockit API
+
 * Specifying default results
 * Iterated expectations
 
