@@ -10,6 +10,7 @@ import org.eclipse.xtend.jmockit.test.expectations.*
 - "Xtend-JMockit simple test"
 
 ## Expectations tests
+- "Result of the method calls can be specified with a dynamic result setter"
 - "onInstance extension allows differentiate between single instances"
 - "Result of the method calls can be specified with result setter"
 - "Result of the method calls can be specified with returns method"

@@ -2,6 +2,7 @@ package org.eclipse.xtend.jmockit;
 
 import java.lang.reflect.Method;
 
+import mockit.Delegate;
 import mockit.Expectations;
 import mockit.NonStrictExpectations;
 import mockit.internal.expectations.RecordPhase;
@@ -10,6 +11,13 @@ import mockit.internal.expectations.argumentMatching.EqualityMatcher;
 import mockit.internal.expectations.argumentMatching.HamcrestAdapter;
 import mockit.internal.expectations.transformation.ActiveInvocations;
 
+import org.eclipse.xtext.xbase.lib.Functions.Function0;
+import org.eclipse.xtext.xbase.lib.Functions.Function1;
+import org.eclipse.xtext.xbase.lib.Functions.Function2;
+import org.eclipse.xtext.xbase.lib.Functions.Function3;
+import org.eclipse.xtext.xbase.lib.Functions.Function4;
+import org.eclipse.xtext.xbase.lib.Functions.Function5;
+import org.eclipse.xtext.xbase.lib.Functions.Function6;
 import org.eclipse.xtext.xbase.lib.Procedures.Procedure1;
 
 public class JMockitExtension {
@@ -31,8 +39,73 @@ public class JMockitExtension {
     	};
     }
 
-    public static void setResult(Expectations expectations, Object result) throws Exception {
-        ActiveInvocations.addResult(result);
+//    public static <T, T1> void setResult(Expectations expectations, final Function1<T1, T> fnc) throws Exception {
+//    	ActiveInvocations.addResult(new Delegate<T>() {
+//    		T method(T1 p1) {
+//    			return fnc.apply(p1);
+//    		}
+//    	});
+//    }
+    
+    @SuppressWarnings({ "rawtypes", "unused", "unchecked" })
+    public static void setResult(Expectations expectations, final Object result) throws Exception {
+    	if (result instanceof Function0<?>) {
+    		ActiveInvocations.addResult(new Delegate<Object>() {
+				Object method() {
+            		return ((Function0) result).apply();
+            	}
+    		});
+    		return;
+    	}
+    	if (result instanceof Function1) {
+    		ActiveInvocations.addResult(new Delegate<Object>() {
+    			Object method(Object p1) {
+    				return ((Function1) result).apply(p1);
+    			}
+    		});
+    		return;
+    	}
+    	if (result instanceof Function2) {
+    		ActiveInvocations.addResult(new Delegate<Object>() {
+    			Object method(Object p1, Object p2) {
+    				return ((Function2) result).apply(p1, p2);
+    			}
+    		});
+    		return;
+    	}
+    	if (result instanceof Function3) {
+    		ActiveInvocations.addResult(new Delegate<Object>() {
+    			Object method(Object p1, Object p2, Object p3) {
+    				return ((Function3) result).apply(p1, p2, p3);
+    			}
+    		});
+    		return;
+    	}
+    	if (result instanceof Function4) {
+    		ActiveInvocations.addResult(new Delegate<Object>() {
+    			Object method(Object p1, Object p2, Object p3, Object p4) {
+    				return ((Function4) result).apply(p1, p2, p3, p4);
+    			}
+    		});
+    		return;
+    	}
+    	if (result instanceof Function5) {
+    		ActiveInvocations.addResult(new Delegate<Object>() {
+    			Object method(Object p1, Object p2, Object p3, Object p4, Object p5) {
+    				return ((Function5) result).apply(p1, p2, p3, p4, p5);
+    			}
+    		});
+    		return;
+    	}
+    	if (result instanceof Function6) {
+    		ActiveInvocations.addResult(new Delegate<Object>() {
+    			Object method(Object p1, Object p2, Object p3, Object p4, Object p5, Object p6) {
+    				return ((Function6) result).apply(p1, p2, p3, p4, p5, p6);
+    			}
+    		});
+    		return;
+    	}
+    	ActiveInvocations.addResult(result);
     }
     
     public static void setResultInt(Expectations expectations, int result) throws Exception {

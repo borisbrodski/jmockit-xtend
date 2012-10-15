@@ -97,6 +97,22 @@ mock [
 
 JMockit Tutorial: http://jmockit.googlecode.com/svn/trunk/www/tutorial/BehaviorBasedTesting.html#results
 
+### Dynamic `results=`
+
+The `result=` setter can be also used to pass a lambda expression instead of a constant result.
+The lambda expression will be evaluated each time the mocked method is invoked.
+
+```java
+mock [
+	service.getUniqueId
+	result = [| id = id + 1 ]
+	
+	service.calculateSum(anyInt, anyInt)
+	result = [ int a, int b | a + b ]
+]
+```
+
+
 ### Using `returns()`
 
 The `returns` method can be also used to set one or more results
@@ -206,6 +222,8 @@ stub [
 	service.max(withInt(1), anyInt)         // ok: anyInt == (int)0
 ]
 ```
+
+### Dynamic parameter matching with `matching*()`
 
 ### TODO
 

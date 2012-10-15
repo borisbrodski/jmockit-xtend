@@ -73,6 +73,15 @@ public class ExpectationsAPI {
 	public String paramsIntIntInt(int a, int b, int c) {
 		throw new RuntimeException("Not implemented");
 	}
+	public String paramsIntIntIntInt(int a, int b, int c, int d) {
+		throw new RuntimeException("Not implemented");
+	}
+	public String paramsIntIntIntIntInt(int a, int b, int c, int d, int e) {
+		throw new RuntimeException("Not implemented");
+	}
+	public String paramsIntIntIntIntIntInt(int a, int b, int c, int d, int e, int f) {
+		throw new RuntimeException("Not implemented");
+	}
 	public String paramsLongLong(long a, long b) {
 		throw new RuntimeException("Not implemented");
 	}
@@ -119,6 +128,9 @@ public class ExpectationsAPI {
 		throw new RuntimeException("Not implemented");
 	}
 	public String paramsStringStringString(String a, String b, String c) {
+		throw new RuntimeException("Not implemented");
+	}
+	public String paramsStringBLongBoolean(String a, Long b, boolean c) {
 		throw new RuntimeException("Not implemented");
 	}
 }
