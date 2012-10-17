@@ -1,4 +1,4 @@
-# Xtend-JMockit
+# JMockit-Xtend
 
 Collection of the Xtend extension methods adding JMockit support
 
@@ -27,7 +27,11 @@ class MyTest {
 	}
 ```
 
-### Using `mock []`
+### Expectations
+
+
+
+#### Expectations using `mock []`
 
 The `mock []` method is an alias to the JMockit `new `[Expectations](http://jmockit.googlecode.com/svn/trunk/www/javadoc/mockit/Expectations.html)()`{{ ... }}`
 block, which is a strict by default.
@@ -45,7 +49,7 @@ mock [
 
 JMockit Tutorial: http://jmockit.googlecode.com/svn/trunk/www/tutorial/BehaviorBasedTesting.html#strictness
 
-### Using `stub []`
+#### Non strict expectations using `stub []`
 
 The `stub []` method is an alias to the JMockit `new `[NonStrictExpectations](http://jmockit.googlecode.com/svn/trunk/www/javadoc/mockit/NonStrictExpectations.html)()`{{ ... }}`
 block, which is a non-strict by default.
@@ -223,31 +227,51 @@ stub [
 ]
 ```
 
-### Static parameter matching with with*() methods
+### Parameter matching with JMockit with*() methods
 
-All JMockit with*() methods are supported:
+Following JMockit `with*()` methods are supported within "expectations" and "verification" blocks:
 
-* [x] with(Object)
-* [x] with(Delegate<T>)  Only with explicit casting
-* [x] with(T, Object)
-* [x] withAny(T)
-* [ ] withCapture()
-* [ ] withCapture(List<T>)
-* [ ] withEqual(double, double)
-* [ ] withEqual(float, double)
-* [ ] withEqual(T)
-* [ ] withInstanceLike(T)
-* [ ] withInstanceOf(Class<T>)
-* [ ] withMatch(T)
-* [ ] withNotEqual(T)
-* [ ] withNotNull()
-* [ ] withNull()
-* [ ] withPrefix(T)
-* [ ] withSameInstance(T)
-* [ ] withSubstring(T)
-* [ ] withSuffix(T)
+* `with(Object)`
+* `with(T, Object)`
+* `withAny(T)`
+* `withEqual(double, double)`
+* `withEqual(float, double)`
+* `withEqual(T)`
+* `withInstanceLike(T)`
+* `withInstanceOf(Class) Doesn't work with primitive types`
+* `withMatch(T)`
+* `withNotEqual(T)`
+* `withNotNull()`
+* `withNull()`
+* `withPrefix(T)`
+* `withSameInstance(T)`
+* `withSubstring(T)`
+* `withSuffix(T)`
 
-### Dynamic parameter matching with `matching*()`
+The JMockit `with(Delegate)` is renamed to `withDelegate(Delegate)` allowing the Xtend-lambda expression to be used with the simple `with []` syntax 
+
+Following JMockit `with*()` methods are supported only within the "verifications" block:
+
+* `withCapture()`
+* `withCapture(Object)`
+
+### Xtend-style parameter matching with `with []`
+
+The dynamic parameter matching can be accomplished using Xtend-lambda expression using the `with []`
+extension method for the `Object` types and `withInt []`, `withLong []`, ... extension method for
+all primitive types.
+
+```java
+stub [
+	service.processString(with [ length > 5 ])
+	service.processString(with [ it?.length > 5 ]) // Prevents NullPointerException if it==null
+	                                               // If it==null then (it?.length) evaluates to 0 
+	service.processInt(withInt [ it > 0 ])
+
+	service.processInt(with [ it > 0 ])  // NullPointerException: withInt should be used
+]
+```
+
 
 
 
@@ -266,3 +290,4 @@ All JMockit with*() methods are supported:
 * Automatic instantiation and injection of tested classes
 * Reusing expectation and verification blocks
 * State-based testing with JMockit
+* forEachInvocation (see InvocationBlockModifier.java) 

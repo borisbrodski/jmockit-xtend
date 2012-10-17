@@ -133,4 +133,7 @@ public class ExpectationsAPI {
 	public String paramsStringBLongBoolean(String a, Long b, boolean c) {
 		throw new RuntimeException("Not implemented");
 	}
+	public String paramsObject(Object a) {
+		throw new RuntimeException("Not implemented");
+	}
 }

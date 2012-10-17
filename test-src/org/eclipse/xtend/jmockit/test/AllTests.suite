@@ -3,6 +3,7 @@ package org.eclipse.xtend.jmockit.test
 import org.eclipse.xtend.jmockit.test.expectations.*
 import org.eclipse.xtend.jmockit.test.simple.*
 import org.eclipse.xtend.jmockit.test.expectations.*
+import org.eclipse.xtend.jmockit.test.expectations.*
 
 # All tests
 ## Common tests
@@ -18,3 +19,4 @@ import org.eclipse.xtend.jmockit.test.expectations.*
 - "SetTimes sets the count of the method invocations"
 - "Simple parameter matching with any() and with()"
 - "stub behaves like NonStrictExpectations"
+- "with*() methods work as expected"

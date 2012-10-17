@@ -1,25 +1,28 @@
 package org.eclipse.xtend.jmockit;
 
 import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.util.Arrays;
-import java.util.Collections;
+import java.util.regex.Pattern;
 
 import mockit.Delegate;
 import mockit.Expectations;
-import mockit.Invocation;
 import mockit.NonStrictExpectations;
 import mockit.internal.expectations.RecordPhase;
 import mockit.internal.expectations.argumentMatching.AlwaysTrueMatcher;
 import mockit.internal.expectations.argumentMatching.ArgumentMatcher;
+import mockit.internal.expectations.argumentMatching.ClassMatcher;
 import mockit.internal.expectations.argumentMatching.EqualityMatcher;
 import mockit.internal.expectations.argumentMatching.HamcrestAdapter;
-import mockit.internal.expectations.argumentMatching.ReflectiveMatcher;
+import mockit.internal.expectations.argumentMatching.InequalityMatcher;
+import mockit.internal.expectations.argumentMatching.NonNullityMatcher;
+import mockit.internal.expectations.argumentMatching.NullityMatcher;
+import mockit.internal.expectations.argumentMatching.NumericEqualityMatcher;
+import mockit.internal.expectations.argumentMatching.PatternMatcher;
+import mockit.internal.expectations.argumentMatching.SamenessMatcher;
+import mockit.internal.expectations.argumentMatching.StringContainmentMatcher;
+import mockit.internal.expectations.argumentMatching.StringPrefixMatcher;
+import mockit.internal.expectations.argumentMatching.StringSuffixMatcher;
 import mockit.internal.expectations.transformation.ActiveInvocations;
-import mockit.internal.util.DefaultValues;
 
-import org.eclipse.xtext.xbase.lib.IntegerExtensions;
 import org.eclipse.xtext.xbase.lib.Functions.Function0;
 import org.eclipse.xtext.xbase.lib.Functions.Function1;
 import org.eclipse.xtext.xbase.lib.Functions.Function2;
@@ -27,7 +30,6 @@ import org.eclipse.xtext.xbase.lib.Functions.Function3;
 import org.eclipse.xtext.xbase.lib.Functions.Function4;
 import org.eclipse.xtext.xbase.lib.Functions.Function5;
 import org.eclipse.xtext.xbase.lib.Functions.Function6;
-import org.eclipse.xtext.xbase.lib.IterableExtensions;
 import org.eclipse.xtext.xbase.lib.Procedures.Procedure1;
 
 public class JMockitExtension {
@@ -281,16 +283,50 @@ public class JMockitExtension {
     }
     
     @SuppressWarnings("unchecked")
-	public static <T> T with(Expectations expectations, Delegate<T> delegateObjectWithInvocationHandlerMethod)
-    {
-       return (T)invokeOnInvocation(expectations, "with", new Class<?>[] {Delegate.class}, delegateObjectWithInvocationHandlerMethod);
+	public static <T> T withDelegate(Expectations expectations, Delegate<T> delegateObjectWithInvocationHandlerMethod) throws Exception {
+    	if (delegateObjectWithInvocationHandlerMethod == null) {
+    		addExpectationArgumentMatcher(expectations, new EqualityMatcher(null));
+    		return null;
+    	}
+        return (T)invokeOnInvocation(expectations, "with", new Class<?>[] {Delegate.class}, delegateObjectWithInvocationHandlerMethod);
+    }
+    
+    @SuppressWarnings("unchecked")
+    public static <T> T with(Expectations expectations, final Function1<T, Boolean> lambdaMatcher) throws Exception {
+    	if (lambdaMatcher == null) {
+    		addExpectationArgumentMatcher(expectations, new EqualityMatcher(null));
+    		return null;
+    	}
+    	return (T)invokeOnInvocation(expectations, "with", new Class<?>[] {Delegate.class}, 
+    			new Delegate<T>() {
+    		@SuppressWarnings("unused")
+			public boolean match(T t) {
+    			return lambdaMatcher.apply(t);
+    		}
+    	});
+    }
+    
+    @SuppressWarnings("unchecked")
+    public static long withLong(Expectations expectations, final Function1<Long, Boolean> lambdaMatcher) throws Exception {
+    	if (lambdaMatcher == null) {
+    		addExpectationArgumentMatcher(expectations, new EqualityMatcher(null));
+    	} else {
+	    	invokeOnInvocation(expectations, "with", new Class<?>[] {Delegate.class}, 
+	    			new Delegate<Long>() {
+	    		@SuppressWarnings("unused")
+	    		public boolean match(long t) {
+	    			return lambdaMatcher.apply(t);
+	    		}
+	    	});
+    	}
+    	return 0;
     }
 
     public static < T > T with(Expectations expectations, T t) throws Exception {
         addExpectationArgumentMatcher(expectations, new EqualityMatcher(t));
         return t;
     }
-    
+
     public static int withInt(Expectations expectations, int t) throws Exception {
     	addExpectationArgumentMatcher(expectations, new EqualityMatcher(t));
     	return 0;
@@ -353,6 +389,191 @@ public class JMockitExtension {
        return arg;
     }
 
+    /**
+     * When passed as argument for an expectation, creates a new matcher that will check if the given value is
+     * {@link Object#equals(Object) equal} to the corresponding argument received by a matching invocation.
+     * <p/>
+     * The matcher is added to the end of the list of argument matchers for the invocation being recorded/verified.
+     * It cannot be reused for a different parameter.
+     * <p/>
+     * Usually, this particular method should <em>not</em> be used. Instead, simply pass the desired argument value
+     * directly, without any matcher.
+     * Only when specifying values for a <em>varargs</em> method it's useful, and even then only when some other argument
+     * matcher is also used.
+     * <p/>
+     * <a href="http://jmockit.googlecode.com/svn/trunk/www/tutorial/BehaviorBasedTesting.html#argumentMatching">In the
+     * Tutorial</a>
+     *
+     * @param arg the expected argument value
+     *
+     * @return the given argument
+     */
+    public static < T > T withEqual(Expectations expectations, T arg) throws Exception {
+    	addExpectationArgumentMatcher(expectations, new EqualityMatcher(arg));
+        return arg;
+    }
+    
+    /**
+     * Same as {@link #withEqual(Expectations, Object)}, but checking that a numeric invocation argument in the replay phase is
+     * sufficiently close to the given value.
+     *
+     * @param value the center value for range comparison
+     * @param delta the tolerance around the center value, for a range of [value - delta, value + delta]
+     *
+     * @return the given {@code value}
+     */
+    public static double withEqual(Expectations expectations, double value, double delta) throws Exception {
+    	addExpectationArgumentMatcher(expectations, new NumericEqualityMatcher(value, delta));
+    	return value;
+    }
+    
+    /**
+     * Same as {@link #withEqual(Expectations, Object)}, but checking that a numeric invocation argument in the replay phase is
+     * sufficiently close to the given value.
+     *
+     * @param value the center value for range comparison
+     * @param delta the tolerance around the center value, for a range of [value - delta, value + delta]
+     *
+     * @return the given {@code value}
+     */
+    public static float withEqual(Expectations expectations, float value, double delta) throws Exception {
+    	addExpectationArgumentMatcher(expectations, new NumericEqualityMatcher(value, delta));
+        return value;
+    }
+
+    /**
+     * Same as {@link #withEqual(Expectations, Object)}, but checking that an invocation argument in the replay phase is an instance of
+     * the same class as the given object.
+     * <p/>
+     * Equivalent to a <code>withInstanceOf(object.getClass())</code> call, except that it returns {@code object} instead
+     * of {@code null}.
+     *
+     * @param object an instance of the desired class
+     *
+     * @return the given instance
+     */
+    public static <T> T withInstanceLike(Expectations expectations, T object) throws Exception {
+    	addExpectationArgumentMatcher(expectations, new ClassMatcher(object.getClass()));
+        return object;
+    }
+    
+    /**
+     * Same as {@link #withEqual(Expectations, Object)}, but checking that an invocation argument in the replay phase is an instance of
+     * the given class.
+     *
+     * @param argClass the desired class
+     *
+     * @return always {@code null}; if you need a specific return value, use {@link #withInstanceLike(Object)}
+     */
+    public static <T> T withInstanceOf(Expectations expectations, Class<T> argClass) throws Exception {
+    	addExpectationArgumentMatcher(expectations, new ClassMatcher(argClass));
+        return null;
+    }
+
+    /**
+     * Same as {@link #withEqual(Expectations, Object)}, but checking that a textual invocation argument in the replay phase matches
+     * the given {@link Pattern regular expression}.
+     * <p/>
+     * Note that this can be used for any string comparison, including case insensitive ones (with {@code "(?i)"} in the
+     * regex).
+     *
+     * @param regex an arbitrary (non-null) regular expression against which textual argument values will be matched
+     *
+     * @return the given regex
+     *
+     * @see Pattern#compile(String, int)
+     */
+    public static <T extends CharSequence> T withMatch(Expectations expectations, T regex) throws Exception {
+    	addExpectationArgumentMatcher(expectations, new PatternMatcher(regex.toString()));
+        return regex;
+    }
+    
+    /**
+     * Same as {@link #withEqual(Expectations, Object)}, but checking that the invocation argument in the replay phase is different
+     * from the given value.
+     *
+     * @param arg an arbitrary value, but different from the ones expected to occur during replay
+     *
+     * @return the given argument value
+     */
+    public static <T> T withNotEqual(Expectations expectations, T arg) throws Exception {
+    	addExpectationArgumentMatcher(expectations, new InequalityMatcher(arg));
+        return arg;
+    }
+
+    /**
+     * Same as {@link #withEqual(Expectations, Object)}, but checking that an invocation argument in the replay phase is not
+     * {@code null}.
+     *
+     * @return always {@code null}
+     */
+    public static <T> T withNotNull(Expectations expectations) throws Exception {
+    	addExpectationArgumentMatcher(expectations, NonNullityMatcher.INSTANCE);
+        return null;
+    }
+    
+    /**
+     * Same as {@link #withEqual(Object)}, but checking that an invocation argument in the replay phase is {@code null}.
+     *
+     * @return always {@code null}
+     */
+    public static <T> T withNull(Expectations expectations) throws Exception {
+    	addExpectationArgumentMatcher(expectations, NullityMatcher.INSTANCE);
+        return null;
+    }
+    
+    /**
+     * Same as {@link #withEqual(Expectations, Object)}, but checking that a textual invocation argument in the replay phase starts
+     * with the given text.
+     *
+     * @param text an arbitrary non-null textual value
+     *
+     * @return the given text
+     */
+    public static <T extends CharSequence> T withPrefix(Expectations expectations, T text) throws Exception {
+    	addExpectationArgumentMatcher(expectations, new StringPrefixMatcher(text));
+        return text;
+    }
+    
+    /**
+     * Same as {@link #withEqual(Expectations, Object)}, but checking that an invocation argument in the replay phase is the exact same
+     * instance as the one in the recorded/verified invocation.
+     *
+     * @param object the desired instance
+
+     * @return the given object
+     */
+    public static <T> T withSameInstance(Expectations expectations, T object) throws Exception {
+    	addExpectationArgumentMatcher(expectations, new SamenessMatcher(object));
+        return object;
+    }
+    
+    /**
+     * Same as {@link #withEqual(Object)}, but checking that a textual invocation argument in the replay phase contains
+     * the given text as a substring.
+     *
+     * @param text an arbitrary non-null textual value
+     *
+     * @return the given text
+     */
+    public static <T extends CharSequence> T withSubstring(Expectations expectations, T text) throws Exception {
+    	addExpectationArgumentMatcher(expectations, new StringContainmentMatcher(text));
+        return text;
+    }
+    
+    /**
+     * Same as {@link #withEqual(Object)}, but checking that a textual invocation argument in the replay phase ends with
+     * the given text.
+     *
+     * @param text an arbitrary non-null textual value
+     *
+     * @return the given text
+     */
+    public static <T extends CharSequence> T withSuffix(Expectations expectations, T text) throws Exception {
+    	addExpectationArgumentMatcher(expectations, new StringSuffixMatcher(text));
+        return text;
+    }
+    
     private static < T > void addExpectationArgumentMatcher(Expectations expectations, ArgumentMatcher matcher) throws Exception {
         getCurrectExpectationsPhase(expectations).addArgMatcher(matcher);
     }
