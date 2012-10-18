@@ -1,12 +1,149 @@
 # JMockit-Xtend
 
-Collection of the Xtend extension methods adding JMockit support
+Collection of the extension methods adding [JMockit](http://jmockit.googlecode.com/)
+support to the [Xtend](http://www.eclipse.org/xtend/).
 
+
+## Content ##
+
+* [- [Introduction](#Introduction)
+- [Download](#Download)
+- [New cool Xtend-driven API enhancements](#NewCoolXtendAPI)
+ - [Simple mock definitions](#SimpleMockDefinitions)
+ - [`any` without cast](#AnyWithoutCast)
+ - [Dynamic parameter matching](#DynamicParameterMatching)
+ - [Dynamic return value](#DynamicReturnValue)
+- [Differences to the original JMockit API](#DifferencesToJMockitAPI)
+- [Usage](#Usage)
+ - [Expectations](#Expectations)
+  - [Expectations using `mock []`](#StrictExpectationsUsingMock)
+  - [Non strict expectations using `stub []`](#NonStrictExpectationsWithStub)
+ - [Using `result=`](#UsingResult)
+ - [Xtend-style dynamic result using `result= []`](#XtendStyleDynamicResult)
+ - [Using `returns()`](#UsingReturns)
+ - [Using `onInstance()`](#UsingOnInstance)
+ - [Using `times=`](#UsingTimes)
+ - [Using `maxTimes=`](#UsingMaxTimes)
+ - [Simple parameter matching with `any()` and `with()`](#SimpleParameterMatchingWithAnyAndWith)
+ - [Parameter matching with JMockit with*() methods](#ParameterMatchingWithWithXXX)
+ - [Xtend-style dynamic parameter matching using `with []`](#XtendStyleParameterMatching)
+- [TODO](#TODO)
+
+<a name="Introduction"></a>
 ## Introduction
 
-Xtend-JMockit contains a single file (upon tests) with the collection
-of the Xtend extension methods and a couple of entry methods, like `mock` and `stub`.
+JMockit-Xtend provides a collection of the extension and helper methods
+to integrate the popular java mocking framework
+[JMockit](http://jmockit.googlecode.com/) with the new
+[Xtend](http://www.eclipse.org/xtend/) language.
+The goal is not only to provide [almost complete](#DifferencesToJMockitAPI "Differences to the original JMockit API")
+original JMockit API to the Xtend but also [enhance the API]() using the power of the Xtend.
 
+JMockit-Xtend consists of a single java file [JMockitExtension.java](https://raw.github.com/borisbrodski/jmockit-xtend/master/src/org/eclipse/xtend/jmockit/JMockitExtension.java),
+and [Jnaio](http://jnario.org/) tests.
+
+<a href="#top">&#8593; top</a>
+
+<a name="Download"></a>
+## Download
+
+You can download the JMockitExtension.java from the master branch
+[here](https://raw.github.com/borisbrodski/jmockit-xtend/master/src/org/eclipse/xtend/jmockit/JMockitExtension.java) 
+and then simply add the downloaded file to your java project.
+
+<a href="#top">&#8593; top</a>
+
+<a name="NewCoolXtendAPI"></a>
+## New cool Xtend-driven API enhancements
+
+Cool things first. Here is a brief overview of the new cool Xtend-powered API
+
+<a href="#top">&#8593; top</a>
+
+<a name="SimpleMockDefinitions"></a>
+### Simple mock definitions
+
+JMockit-Xtend provides a set of convenient methods to define the mock configurations:
+
+* `mock []` defines the [strict mock expectations](http://jmockit.googlecode.com/svn/trunk/www/tutorial/BehaviorBasedTesting.html#strictness)
+* `stub []` defines the [non-strict mock expectations](http://jmockit.googlecode.com/svn/trunk/www/tutorial/BehaviorBasedTesting.html#strictness)
+
+Example:
+
+```java
+stub [
+	permissionHelper.allowToSend       // non-strict expectations 
+	result = true
+]
+
+mock [
+	permissionHelper.prepareOperation       // strict expectations
+	permissionHelper.performOperation       // strict expectations 
+]
+```
+
+<a href="#top">&#8593; top</a>
+
+<a name="AnyWithoutCast"></a>
+### `any` without cast
+
+Thanks to the generic method definition is itn't necessary to cast the `any` to the
+expected type. You can do it though to enforce the type, if you want.
+
+**Warning**: The `any` method can be used only with the non primitive type. For all
+primitive types the corresponding `anyInt`, `anyLong`, ... methods should be used.
+The violators will be punished with the NullPointerException.
+
+```java
+stub [
+    service.acceptString(any, any, any)
+	stringBuilder.append(any as String)
+	Math::max(any, any)                  // NullPointerException, use anyInt instead
+]
+``` 
+
+<a href="#top">&#8593; top</a>
+
+
+<a name="DynamicParameterMatching"></a>
+### Dynamic parameter matching
+
+It's very easy to match the parameter using Xtend-[Lambda Expressions](http://www.eclipse.org/xtend/documentation.html#lambdas):
+
+```java
+stub [
+    service.acceptString(with [ length > 5 ])
+]
+``` 
+
+<a href="#top">&#8593; top</a>
+
+<a name="DynamicReturnValue"></a>
+### Dynamic return value
+
+It's also very easy to calculate a return value of the mocked method on the fly:
+
+```java
+stub [
+    service.generateEMail(any, any, any)
+    result = [ String to, String subject, String body |
+    	'''
+	    	To: «to»
+	    	Subject: «subject»
+	    	«body»
+    	'''.toString
+    ]
+]
+``` 
+
+<a href="#top">&#8593; top</a>
+
+<a name="DifferencesToJMockitAPI"></a>
+## Differences to the original JMockit API
+
+<a href="#top">&#8593; top</a>
+
+<a name="Usage"></a>
 ## Usage
 
 ```java
@@ -27,10 +164,13 @@ class MyTest {
 	}
 ```
 
+
+<a href="#top">&#8593; top</a>
+
+<a name="Expectations"></a>
 ### Expectations
 
-
-
+<a name="StrictExpectationsUsingMock"></a>
 #### Expectations using `mock []`
 
 The `mock []` method is an alias to the JMockit `new `[Expectations](http://jmockit.googlecode.com/svn/trunk/www/javadoc/mockit/Expectations.html)()`{{ ... }}`
@@ -49,6 +189,9 @@ mock [
 
 JMockit Tutorial: http://jmockit.googlecode.com/svn/trunk/www/tutorial/BehaviorBasedTesting.html#strictness
 
+<a href="#top">&#8593; top</a>
+
+<a name="NonStrictExpectationsWithStub"></a>
 #### Non strict expectations using `stub []`
 
 The `stub []` method is an alias to the JMockit `new `[NonStrictExpectations](http://jmockit.googlecode.com/svn/trunk/www/javadoc/mockit/NonStrictExpectations.html)()`{{ ... }}`
@@ -67,6 +210,9 @@ stub [
 
 JMockit Tutorial: http://jmockit.googlecode.com/svn/trunk/www/tutorial/BehaviorBasedTesting.html#strictness
 
+<a href="#top">&#8593; top</a>
+
+<a name="UsingResult"></a>
 ### Using `result=`
 
 The `result=` setter can be used to set one or more results
@@ -101,7 +247,10 @@ mock [
 
 JMockit Tutorial: http://jmockit.googlecode.com/svn/trunk/www/tutorial/BehaviorBasedTesting.html#results
 
-### Dynamic `results=`
+<a href="#top">&#8593; top</a>
+
+<a name="XtendStyleDynamicResult"></a>
+### Xtend-style dynamic result using `result= []`
 
 The `result=` setter can be also used to pass a lambda expression instead of a constant result.
 The lambda expression will be evaluated each time the mocked method is invoked.
@@ -116,7 +265,9 @@ mock [
 ]
 ```
 
+<a href="#top">&#8593; top</a>
 
+<a name="UsingReturns"></a>
 ### Using `returns()`
 
 The `returns` method can be also used to set one or more results
@@ -148,6 +299,9 @@ mock [
 
 JMockit Tutorial: http://jmockit.googlecode.com/svn/trunk/www/tutorial/BehaviorBasedTesting.html#results
 
+<a href="#top">&#8593; top</a>
+
+<a name="UsingOnInstance"></a>
 ### Using `onInstance()`
 
 The `onInstance` method can be used to restrict an extected call to a single instance of a mocked class.
@@ -161,7 +315,9 @@ mock [
 
 Tutorial: http://jmockit.googlecode.com/svn/trunk/www/tutorial/BehaviorBasedTesting.html#onInstance
 
+<a href="#top">&#8593; top</a>
 
+<a name="UsingTimes"></a>
 ### Using `times=`
 
 The `times=` (or setTimes()) setter specifies the number of the expected calls to the mocked method.
@@ -175,7 +331,9 @@ mock [
 
 JMockit Tutorial: http://jmockit.googlecode.com/svn/trunk/www/tutorial/BehaviorBasedTesting.html#constraints
 
+<a href="#top">&#8593; top</a>
 
+<a name="UsingMaxTimes"></a>
 ### Using `maxTimes=`
 
 The `maxTimes=` (or setMaxTimes()) setter specifies the maximal number of the expected calls to the mocked method.
@@ -189,6 +347,9 @@ mock [
 
 JMockit Tutorial: http://jmockit.googlecode.com/svn/trunk/www/tutorial/BehaviorBasedTesting.html#constraints
 
+<a href="#top">&#8593; top</a>
+
+<a name="SimpleParameterMatchingWithAnyAndWith"></a>
 ### Simple parameter matching with `any()` and `with()`
 
 The `any()`, `anyInt()`, `anyLong()`, ... and `with()`, `withInt()`, `withLong()`, ... extension methods are used to
@@ -227,6 +388,9 @@ stub [
 ]
 ```
 
+<a href="#top">&#8593; top</a>
+
+<a name="ParameterMatchingWithWithXXX"></a>
 ### Parameter matching with JMockit with*() methods
 
 Following JMockit `with*()` methods are supported within "expectations" and "verification" blocks:
@@ -255,7 +419,10 @@ Following JMockit `with*()` methods are supported only within the "verifications
 * `withCapture()`
 * `withCapture(Object)`
 
-### Xtend-style parameter matching with `with []`
+<a href="#top">&#8593; top</a>
+
+<a name="XtendStyleParameterMatching"></a>
+### Xtend-style dynamic parameter matching using `with []`
 
 The dynamic parameter matching can be accomplished using Xtend-lambda expression using the `with []`
 extension method for the `Object` types and `withInt []`, `withLong []`, ... extension method for
@@ -272,10 +439,10 @@ stub [
 ]
 ```
 
+<a href="#top">&#8593; top</a>
 
-
-
-### TODO
+<a name="TODO"></a>
+## TODO
 
 * README - summarize differences to the JMockit API
 
@@ -291,3 +458,5 @@ stub [
 * Reusing expectation and verification blocks
 * State-based testing with JMockit
 * forEachInvocation (see InvocationBlockModifier.java) 
+
+<a href="#top">&#8593; top</a>
