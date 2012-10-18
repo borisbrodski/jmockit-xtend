@@ -27,7 +27,7 @@ support to the [Xtend](http://www.eclipse.org/xtend/).
  - [Simple parameter matching with `any()` and `with()`](#SimpleParameterMatchingWithAnyAndWith)
  - [Parameter matching with JMockit with*() methods](#ParameterMatchingWithWithXXX)
  - [Xtend-style dynamic parameter matching using `with []`](#XtendStyleParameterMatching)
-- [TODO](#TODO)
+- [TODO](#TODO)*
 
 <a name="Introduction"></a>
 ## Introduction
@@ -97,13 +97,14 @@ The violators will be punished with the NullPointerException.
 ```java
 stub [
     service.acceptString(any, any, any)
-	stringBuilder.append(any as String)
+	stringBuilder.append(<String>any)
 	Math::max(any, any)                  // NullPointerException, use anyInt instead
 ]
-``` 
+```
+
+For more information see [Simple parameter matching with `any()` and `with()`)[#SimpleParameterMatchingWithAnyAndWith]
 
 <a href="#top">&#8593; top</a>
-
 
 <a name="DynamicParameterMatching"></a>
 ### Dynamic parameter matching

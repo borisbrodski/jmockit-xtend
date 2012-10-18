@@ -200,7 +200,7 @@ describe "Simple parameter matching with any() and with()"{
 			expectationsAPI.paramsStringString(with("test2"), any)
 			result = "(test2, *)"
 			
-			expectationsAPI.paramsStringString(any, any)
+			expectationsAPI.paramsStringString(<String>any, any)
 			result = "(*, *)"
 
 			expectationsAPI.paramsStringStringString(with("-5"), any, with("-7"))
