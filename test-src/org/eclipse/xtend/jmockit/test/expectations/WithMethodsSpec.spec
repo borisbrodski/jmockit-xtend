@@ -10,11 +10,33 @@ describe "with*() methods work as expected" {
 	
 	fact "with(<lambda>) works (type: String)" {
 		stub [
+			expectationsAPI.paramsString(with [ it?.length > 3 ])
+			result = "match1"
+		]
+		expectationsAPI.paramsString("aBc") => null
+		expectationsAPI.paramsString("abcd") => "match1"
+		expectationsAPI.paramsString("abcde") => "match1"
+		expectationsAPI.paramsString("") => null
+		expectationsAPI.paramsString(null) => null
+	}
+	
+	fact "with(<lambda>) works (type: Int)" {
+		stub [
+			expectationsAPI.paramsInt(withInt[ it > 10])
+			result = "match1"
+		]
+		
+		
+		expectationsAPI.paramsInt(9) => null
+		expectationsAPI.paramsInt(10) => null
+		expectationsAPI.paramsInt(11) => "match1"
+		expectationsAPI.paramsInt(12) => "match1"
+	}
+	
+	fact "with(<lambda>) works (type: Long)" {
+		stub [
 			expectationsAPI.paramsLong(withLong [ it > 10])
 			result = "match1"
-			
-			expectationsAPI.paramsString(with [ it?.length % 2 == 0 ])
-			result = "match2"
 		]
 		
 		
@@ -22,12 +44,79 @@ describe "with*() methods work as expected" {
 		expectationsAPI.paramsLong(10) => null
 		expectationsAPI.paramsLong(11) => "match1"
 		expectationsAPI.paramsLong(12) => "match1"
+	}
+	
+	fact "with(<lambda>) works (type: Short)" {
+		stub [
+			expectationsAPI.paramsShort(withShort [ it > 10])
+			result = "match1"
+		]
 		
-		expectationsAPI.paramsString("aBc") => null
-		expectationsAPI.paramsString("abcd") => "match2"
-		expectationsAPI.paramsString("abcde") => null
-		expectationsAPI.paramsString("") => "match2"
-		expectationsAPI.paramsString(null) => null
+		expectationsAPI.paramsShort(9 as short) => null
+		expectationsAPI.paramsShort(10 as short) => null
+		expectationsAPI.paramsShort(11 as short) => "match1"
+		expectationsAPI.paramsShort(12 as short) => "match1"
+	}
+	
+	fact "with(<lambda>) works (type: Byte)" {
+		stub [
+			expectationsAPI.paramsByte(withByte [ it > 10])
+			result = "match1"
+		]
+		
+		
+		expectationsAPI.paramsByte(9 as byte) => null
+		expectationsAPI.paramsByte(10 as byte) => null
+		expectationsAPI.paramsByte(11 as byte) => "match1"
+		expectationsAPI.paramsByte(12 as byte) => "match1"
+	}
+	fact "with(<lambda>) works (type: Double)" {
+		stub [
+			expectationsAPI.paramsDouble(withDouble [ it > 10.3 ])
+			result = "match1"
+		]
+		
+		
+		expectationsAPI.paramsDouble(9.5) => null
+		expectationsAPI.paramsDouble(10.2) => null
+		expectationsAPI.paramsDouble(10.4) => "match1"
+		expectationsAPI.paramsDouble(11) => "match1"
+	}
+	fact "with(<lambda>) works (type: Float)" {
+		stub [
+			expectationsAPI.paramsFloat(withFloat [ it > 10.3 ])
+			result = "match1"
+		]
+		
+		
+		expectationsAPI.paramsFloat(9.5 as float) => null
+		expectationsAPI.paramsFloat(10.2 as float) => null
+		expectationsAPI.paramsFloat(10.4 as float) => "match1"
+		expectationsAPI.paramsFloat(11) => "match1"
+	}
+	
+	fact "with(<lambda>) works (type: Char)" {
+		stub [
+			expectationsAPI.paramsChar(withChar [ Character::isDigit(it) ])
+			result = "match1"
+		]
+		
+		
+		expectationsAPI.paramsChar("a".charAt(0)) => null
+		expectationsAPI.paramsChar("1".charAt(0)) => "match1"
+		expectationsAPI.paramsChar("4".charAt(0)) => "match1"
+		expectationsAPI.paramsChar("X".charAt(0)) => null
+	}
+	
+	fact "with(<lambda>) works (type: Boolean)" {
+		stub [
+			expectationsAPI.paramsBoolean(withBoolean [ !it ])
+			result = "match1"
+		]
+		
+		
+		expectationsAPI.paramsBoolean(true) => null
+		expectationsAPI.paramsBoolean(false) => "match1"
 	}
 	
 	fact "withAny(T) works" {

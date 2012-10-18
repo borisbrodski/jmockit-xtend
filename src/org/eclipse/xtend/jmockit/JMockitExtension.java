@@ -306,20 +306,119 @@ public class JMockitExtension {
     	});
     }
     
-    @SuppressWarnings("unchecked")
-    public static long withLong(Expectations expectations, final Function1<Long, Boolean> lambdaMatcher) throws Exception {
+    public static int withInt(Expectations expectations, final Function1<Integer, Boolean> lambdaMatcher) throws Exception {
     	if (lambdaMatcher == null) {
     		addExpectationArgumentMatcher(expectations, new EqualityMatcher(null));
     	} else {
 	    	invokeOnInvocation(expectations, "with", new Class<?>[] {Delegate.class}, 
-	    			new Delegate<Long>() {
+	    			new Delegate<Integer>() {
 	    		@SuppressWarnings("unused")
-	    		public boolean match(long t) {
+	    		public boolean match(int t) {
 	    			return lambdaMatcher.apply(t);
 	    		}
 	    	});
     	}
     	return 0;
+    }
+    
+    public static long withLong(Expectations expectations, final Function1<Long, Boolean> lambdaMatcher) throws Exception {
+    	if (lambdaMatcher == null) {
+    		addExpectationArgumentMatcher(expectations, new EqualityMatcher(null));
+    	} else {
+    		invokeOnInvocation(expectations, "with", new Class<?>[] {Delegate.class}, 
+    				new Delegate<Long>() {
+    			@SuppressWarnings("unused")
+    			public boolean match(long t) {
+    				return lambdaMatcher.apply(t);
+    			}
+    		});
+    	}
+    	return 0;
+    }
+    
+    public static short withShort(Expectations expectations, final Function1<Short, Boolean> lambdaMatcher) throws Exception {
+    	if (lambdaMatcher == null) {
+    		addExpectationArgumentMatcher(expectations, new EqualityMatcher(null));
+    	} else {
+    		invokeOnInvocation(expectations, "with", new Class<?>[] {Delegate.class}, 
+    				new Delegate<Short>() {
+    			@SuppressWarnings("unused")
+    			public boolean match(short t) {
+    				return lambdaMatcher.apply(t);
+    			}
+    		});
+    	}
+    	return 0;
+    }
+    public static byte withByte(Expectations expectations, final Function1<Byte, Boolean> lambdaMatcher) throws Exception {
+    	if (lambdaMatcher == null) {
+    		addExpectationArgumentMatcher(expectations, new EqualityMatcher(null));
+    	} else {
+    		invokeOnInvocation(expectations, "with", new Class<?>[] {Delegate.class}, 
+    				new Delegate<Byte>() {
+    			@SuppressWarnings("unused")
+    			public boolean match(byte t) {
+    				return lambdaMatcher.apply(t);
+    			}
+    		});
+    	}
+    	return 0;
+    }
+    public static double withDouble(Expectations expectations, final Function1<Double, Boolean> lambdaMatcher) throws Exception {
+    	if (lambdaMatcher == null) {
+    		addExpectationArgumentMatcher(expectations, new EqualityMatcher(null));
+    	} else {
+    		invokeOnInvocation(expectations, "with", new Class<?>[] {Delegate.class}, 
+    				new Delegate<Double>() {
+    			@SuppressWarnings("unused")
+    			public boolean match(double t) {
+    				return lambdaMatcher.apply(t);
+    			}
+    		});
+    	}
+    	return 0;
+    }
+    public static float withFloat(Expectations expectations, final Function1<Float, Boolean> lambdaMatcher) throws Exception {
+    	if (lambdaMatcher == null) {
+    		addExpectationArgumentMatcher(expectations, new EqualityMatcher(null));
+    	} else {
+    		invokeOnInvocation(expectations, "with", new Class<?>[] {Delegate.class}, 
+    				new Delegate<Float>() {
+    			@SuppressWarnings("unused")
+    			public boolean match(float t) {
+    				return lambdaMatcher.apply(t);
+    			}
+    		});
+    	}
+    	return 0;
+    }
+    public static char withChar(Expectations expectations, final Function1<Character, Boolean> lambdaMatcher) throws Exception {
+    	if (lambdaMatcher == null) {
+    		addExpectationArgumentMatcher(expectations, new EqualityMatcher(null));
+    	} else {
+    		invokeOnInvocation(expectations, "with", new Class<?>[] {Delegate.class}, 
+    				new Delegate<Character>() {
+    			@SuppressWarnings("unused")
+    			public boolean match(char t) {
+    				return lambdaMatcher.apply(t);
+    			}
+    		});
+    	}
+    	return 0;
+    }
+    public static boolean withBoolean(Expectations expectations, final Function1<Boolean, Boolean> lambdaMatcher) throws Exception {
+    	if (lambdaMatcher == null) {
+    		addExpectationArgumentMatcher(expectations, new EqualityMatcher(null));
+    	} else {
+    		invokeOnInvocation(expectations, "with", new Class<?>[] {Delegate.class}, 
+    				new Delegate<Boolean>() {
+    			@SuppressWarnings("unused")
+    			public boolean match(boolean t) {
+    				return lambdaMatcher.apply(t);
+    			}
+    		});
+    	}
+    	return false;
     }
 
     public static < T > T with(Expectations expectations, T t) throws Exception {
