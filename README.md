@@ -142,6 +142,10 @@ stub [
 <a name="DifferencesToJMockitAPI"></a>
 ## Differences to the original JMockit API
 
+*TODO* describe:
+- Using `with(T)` matcher, if one matcher used
+- Using `withDelegate(Delegate)` instead of `with(Delegate)`
+
 <a href="#top">&#8593; top</a>
 
 <a name="Usage"></a>
