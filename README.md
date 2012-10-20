@@ -365,8 +365,8 @@ where one of the `any\*()' methods are used.
 
 ```java
 stub [
-    service.max(1, 2)            // ok    - no use of any()
-    service.max(anyInt, with(3)) // ok    - using with() for the values
+    service.max(1, 2)               // ok    - no use of any()
+    service.max(anyInt, with(3))    // ok    - using with() for the values
     service.max(anyInt, 3)          // ERROR - any() used, but the values without with()
     
     stringBuilder.append(anyChar)        // Match java.lang.StringBuilder.append(char) 
