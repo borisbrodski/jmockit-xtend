@@ -6,7 +6,7 @@ support to the [Xtend](http://www.eclipse.org/xtend/).
 
 ## Content ##
 
-* [- [Introduction](#Introduction)
+- [Introduction](#Introduction)
 - [Download](#Download)
 - [New cool Xtend-driven API enhancements](#NewCoolXtendAPI)
  - [Simple mock definitions](#SimpleMockDefinitions)
@@ -25,9 +25,9 @@ support to the [Xtend](http://www.eclipse.org/xtend/).
  - [Using `times=`](#UsingTimes)
  - [Using `maxTimes=`](#UsingMaxTimes)
  - [Simple parameter matching with `any()` and `with()`](#SimpleParameterMatchingWithAnyAndWith)
- - [Parameter matching with JMockit with*() methods](#ParameterMatchingWithWithXXX)
+ - [Parameter matching with JMockit with\*() methods](#ParameterMatchingWithWithXXX)
  - [Xtend-style dynamic parameter matching using `with []`](#XtendStyleParameterMatching)
-- [TODO](#TODO)*
+- [TODO](#TODO)
 
 <a name="Introduction"></a>
 ## Introduction
@@ -65,20 +65,20 @@ Cool things first. Here is a brief overview of the new cool Xtend-powered API
 
 JMockit-Xtend provides a set of convenient methods to define the mock configurations:
 
-* `mock []` defines the [strict mock expectations](http://jmockit.googlecode.com/svn/trunk/www/tutorial/BehaviorBasedTesting.html#strictness)
-* `stub []` defines the [non-strict mock expectations](http://jmockit.googlecode.com/svn/trunk/www/tutorial/BehaviorBasedTesting.html#strictness)
+- `mock []` defines the [strict mock expectations](http://jmockit.googlecode.com/svn/trunk/www/tutorial/BehaviorBasedTesting.html#strictness)
+- `stub []` defines the [non-strict mock expectations](http://jmockit.googlecode.com/svn/trunk/www/tutorial/BehaviorBasedTesting.html#strictness)
 
 Example:
 
 ```java
 stub [
-	permissionHelper.allowToSend       // non-strict expectations 
-	result = true
+    permissionHelper.allowToSend       // non-strict expectations 
+    result = true
 ]
 
 mock [
-	permissionHelper.prepareOperation       // strict expectations
-	permissionHelper.performOperation       // strict expectations 
+    permissionHelper.prepareOperation       // strict expectations
+    permissionHelper.performOperation       // strict expectations 
 ]
 ```
 
@@ -97,19 +97,19 @@ The violators will be punished with the NullPointerException.
 ```java
 stub [
     service.acceptString(any, any, any)
-	stringBuilder.append(<String>any)
-	Math::max(any, any)                  // NullPointerException, use anyInt instead
+    stringBuilder.append(<String>any)    // Force to type to call the right method
+    Math::max(any, any)                  // NullPointerException, use anyInt instead
 ]
 ```
 
-For more information see [Simple parameter matching with `any()` and `with()`)[#SimpleParameterMatchingWithAnyAndWith]
+For more information see [Simple parameter matching with `any()` and `with()`](#SimpleParameterMatchingWithAnyAndWith)
 
 <a href="#top">&#8593; top</a>
 
 <a name="DynamicParameterMatching"></a>
 ### Dynamic parameter matching
 
-It's very easy to match the parameter using Xtend-[Lambda Expressions](http://www.eclipse.org/xtend/documentation.html#lambdas):
+It's very easy to match the parameter using [Xtend-Lambda Expressions](http://www.eclipse.org/xtend/documentation.html#lambdas):
 
 ```java
 stub [
@@ -128,11 +128,11 @@ It's also very easy to calculate a return value of the mocked method on the fly:
 stub [
     service.generateEMail(any, any, any)
     result = [ String to, String subject, String body |
-    	'''
-	    	To: «to»
-	    	Subject: «subject»
-	    	«body»
-    	'''.toString
+        '''
+            To: «to»
+            Subject: «subject»
+            «body»
+        '''.toString
     ]
 ]
 ``` 
@@ -154,15 +154,15 @@ import static org.junit.Assert.*
 import static org.hamcrest.core.Is.*
 
 class MyTest {
-	@Test
-	def void myTest(MyService service) {
-		mock [
-			service.doGreeting
-			result = "Hello World"
-		]
-		
-		assertThat(service.doGreeting, is("Hello World"))
-	}
+    @Test
+    def void myTest(MyService service) {
+        mock [
+            service.doGreeting
+            result = "Hello World"
+        ]
+        
+        assertThat(service.doGreeting, is("Hello World"))
+    }
 ```
 
 
@@ -182,9 +182,9 @@ mock [
     // Strict expectations
     // - default: times = 1
     // - order is important
-	service.call1
-	service.call2("x")
-	service.call3(1, 2)
+    service.call1
+    service.call2("x")
+    service.call3(1, 2)
 ]
 ```
 
@@ -203,9 +203,9 @@ stub [
     // Non-strict expectations
     // - default: times = infinity
     // - order is't important
-	service.call1
-	service.call2("x")
-	service.call3(1, 2)
+    service.call1
+    service.call2("x")
+    service.call3(1, 2)
 ]
 ```
 
@@ -221,16 +221,16 @@ or to throw an exception as a result of the mocked method call.
 
 ```java
 mock [
-	service.methodReturningString
-	result = "Hello World!"
-	result = new NoMoreGreetingsException
-	result = "Ok, the last one"
+    service.methodReturningString
+    result = "Hello World!"
+    result = new NoMoreGreetingsException
+    result = "Ok, the last one"
 ]
 
 assertThat(service.methodReturningString, is("Hello World!"))
 try {
-	service.methodReturningString
-	fail("Exception expected")
+    service.methodReturningString
+    fail("Exception expected")
 } catch (NoMoreGreetingsException e) {}
 assertThat(service.methodReturningString, is("Ok, the last one"))
 ```
@@ -240,9 +240,9 @@ and reduce the chance of the ClassCastException:
 
 ```java
 mock [
-	service.methodReturningLong
-	result = 1L      // With postfix 'L'
-	resultLong = 1   // Without postfix 'L'
+    service.methodReturningLong
+    result = 1L      // With postfix 'L'
+    resultLong = 1   // Without postfix 'L'
 ]
 ```
 
@@ -258,11 +258,11 @@ The lambda expression will be evaluated each time the mocked method is invoked.
 
 ```java
 mock [
-	service.getUniqueId
-	result = [| id = id + 1 ]
-	
-	service.calculateSum(anyInt, anyInt)
-	result = [ int a, int b | a + b ]
+    service.getUniqueId
+    result = [| id = id + 1 ]
+    
+    service.calculateSum(anyInt, anyInt)
+    result = [ int a, int b | a + b ]
 ]
 ```
 
@@ -277,9 +277,9 @@ For further information consult the JMockit documentation. (e. g. http://jmockit
 
 ```java
 mock [
-	service.methodReturningString
-	returns("Hello", "World!")
-	returns("Ok, the last one")
+    service.methodReturningString
+    returns("Hello", "World!")
+    returns("Ok, the last one")
 ]
 
 assertThat(service.methodReturningString, is("Hello"))
@@ -292,9 +292,9 @@ and reduce the chance of the ClassCastException:
 
 ```java
 mock [
-	service.methodReturningLong
-	returns(1L)    // With postfix 'L'
-	returns(1)     // Without postfix 'L'
+    service.methodReturningLong
+    returns(1L)    // With postfix 'L'
+    returns(1)     // Without postfix 'L'
 ]
 ```
 
@@ -309,8 +309,8 @@ The `onInstance` method can be used to restrict an extected call to a single ins
 
 ```java
 mock [
-	instance2.callAcceptedOnAllInstances()
-	onInstance(instance2).callAcceptedOnlyOnInstance2()
+    instance2.callAcceptedOnAllInstances()
+    onInstance(instance2).callAcceptedOnlyOnInstance2()
 ]
 ```
 
@@ -325,8 +325,8 @@ The `times=` (or setTimes()) setter specifies the number of the expected calls t
 
 ```java
 mock [
-	service.sendEmail()
-	times = 3
+    service.sendEmail()
+    times = 3
 ]
 ``` 
 
@@ -341,8 +341,8 @@ The `maxTimes=` (or setMaxTimes()) setter specifies the maximal number of the ex
 
 ```java
 mock [
-	service.sendEmail()
-	maxTimes = 5
+    service.sendEmail()
+    maxTimes = 5
 ]
 ``` 
 
@@ -356,18 +356,18 @@ JMockit Tutorial: http://jmockit.googlecode.com/svn/trunk/www/tutorial/BehaviorB
 The `any()`, `anyInt()`, `anyLong()`, ... and `with()`, `withInt()`, `withLong()`, ... extension methods are used to
 statically match the parameter of the mocked method.
 
-**WARNING**: Unlike JMockit API, you have to wrap the concrete values within `with*()` for every invocation,
-where one of the `any*()' methods are used.
+**WARNING**: Unlike JMockit API, you have to wrap the concrete values within `with\*()` for every invocation,
+where one of the `any\*()' methods are used.
 
 ```java
 stub [
-	service.max(1, 2)            // ok    - no use of any()
-	service.max(anyInt, with(3)) // ok    - using with() for the values
-	service.max(anyInt, 3)          // ERROR - any() used, but the values without with()
-	
-	stringBuilder.append(anyChar)        // Match java.lang.StringBuilder.append(char) 
-	stringBuilder.append(with(3.3))      // Match java.lang.StringBuilder.append(double) 
-	stringBuilder.append(withFloat(3.3)) // Match java.lang.StringBuilder.append(float) 
+    service.max(1, 2)            // ok    - no use of any()
+    service.max(anyInt, with(3)) // ok    - using with() for the values
+    service.max(anyInt, 3)          // ERROR - any() used, but the values without with()
+    
+    stringBuilder.append(anyChar)        // Match java.lang.StringBuilder.append(char) 
+    stringBuilder.append(with(3.3))      // Match java.lang.StringBuilder.append(double) 
+    stringBuilder.append(withFloat(3.3)) // Match java.lang.StringBuilder.append(float) 
 ]
 ``` 
 
@@ -384,41 +384,41 @@ this method is, that it produces a NullPointerException each time it used with p
 
 ```java
 stub [
-	service.max(withInt(1), any)            // NullPointerException: Xtend call any.intValue() where any == null
-	service.max(withInt(1), anyInt)         // ok: anyInt == (int)0
+    service.max(withInt(1), any)            // NullPointerException: Xtend call any.intValue() where any == null
+    service.max(withInt(1), anyInt)         // ok: anyInt == (int)0
 ]
 ```
 
 <a href="#top">&#8593; top</a>
 
 <a name="ParameterMatchingWithWithXXX"></a>
-### Parameter matching with JMockit with*() methods
+### Parameter matching with JMockit with\*() methods
 
-Following JMockit `with*()` methods are supported within "expectations" and "verification" blocks:
+Following JMockit `with\*()` methods are supported within "expectations" and "verification" blocks:
 
-* `with(Object)`
-* `with(T, Object)`
-* `withAny(T)`
-* `withEqual(double, double)`
-* `withEqual(float, double)`
-* `withEqual(T)`
-* `withInstanceLike(T)`
-* `withInstanceOf(Class) Doesn't work with primitive types`
-* `withMatch(T)`
-* `withNotEqual(T)`
-* `withNotNull()`
-* `withNull()`
-* `withPrefix(T)`
-* `withSameInstance(T)`
-* `withSubstring(T)`
-* `withSuffix(T)`
+- `with(Object)`
+- `with(T, Object)`
+- `withAny(T)`
+- `withEqual(double, double)`
+- `withEqual(float, double)`
+- `withEqual(T)`
+- `withInstanceLike(T)`
+- `withInstanceOf(Class) Doesn't work with primitive types`
+- `withMatch(T)`
+- `withNotEqual(T)`
+- `withNotNull()`
+- `withNull()`
+- `withPrefix(T)`
+- `withSameInstance(T)`
+- `withSubstring(T)`
+- `withSuffix(T)`
 
 The JMockit `with(Delegate)` is renamed to `withDelegate(Delegate)` allowing the Xtend-lambda expression to be used with the simple `with []` syntax 
 
-Following JMockit `with*()` methods are supported only within the "verifications" block:
+Following JMockit `with\*()` methods are supported only within the "verifications" block:
 
-* `withCapture()`
-* `withCapture(Object)`
+- `withCapture()`
+- `withCapture(Object)`
 
 <a href="#top">&#8593; top</a>
 
@@ -431,12 +431,12 @@ all primitive types.
 
 ```java
 stub [
-	service.processString(with [ length > 5 ])
-	service.processString(with [ it?.length > 5 ]) // Prevents NullPointerException if it==null
-	                                               // If it==null then (it?.length) evaluates to 0 
-	service.processInt(withInt [ it > 0 ])
+    service.processString(with [ length > 5 ])
+    service.processString(with [ it?.length > 5 ]) // Prevents NullPointerException if it==null
+                                                   // If it==null then (it?.length) evaluates to 0 
+    service.processInt(withInt [ it > 0 ])
 
-	service.processInt(with [ it > 0 ])  // NullPointerException: withInt should be used
+    service.processInt(with [ it > 0 ])  // NullPointerException: withInt should be used
 ]
 ```
 
@@ -445,19 +445,17 @@ stub [
 <a name="TODO"></a>
 ## TODO
 
-* README - summarize differences to the JMockit API
-
-* Specifying default results
-* Iterated expectations
-
-* Explicit verification
-* Accessing private fields, methods and constructors
-* Dynamic partial mocking
-* Cascading mocks
-* Capturing internal instances of mocked types
-* Automatic instantiation and injection of tested classes
-* Reusing expectation and verification blocks
-* State-based testing with JMockit
-* forEachInvocation (see InvocationBlockModifier.java) 
+- README - summarize differences to the JMockit API
+- Specifying default results
+- Iterated expectations
+- Explicit verification
+- Accessing private fields, methods and constructors
+- Dynamic partial mocking
+- Cascading mocks
+- Capturing internal instances of mocked types
+- Automatic instantiation and injection of tested classes
+- Reusing expectation and verification blocks
+- State-based testing with JMockit
+- forEachInvocation (see InvocationBlockModifier.java) 
 
 <a href="#top">&#8593; top</a>
