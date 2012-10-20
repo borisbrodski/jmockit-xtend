@@ -40,7 +40,7 @@ The goal is not only to provide [almost complete](#DifferencesToJMockitAPI "Diff
 original JMockit API to the Xtend but also [enhance the API]() using the power of the Xtend.
 
 JMockit-Xtend consists of a single java file [JMockitExtension.java](https://raw.github.com/borisbrodski/jmockit-xtend/master/src/org/eclipse/xtend/jmockit/JMockitExtension.java),
-and [Jnaio](http://jnario.org/) tests.
+and [Jnario](http://jnario.org/) tests.
 
 <a href="#top">&#8593; top</a>
 
