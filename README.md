@@ -143,7 +143,7 @@ stub [
 ## Differences to the original JMockit API
 
 *TODO* describe:
-- Using `with(T)` matcher, if one matcher used
+- Using `with(T)` matcher, if at least one matcher used
 - Using `withDelegate(Delegate)` instead of `with(Delegate)`
 
 <a href="#top">&#8593; top</a>
