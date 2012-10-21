@@ -4,6 +4,11 @@ Collection of the extension methods adding [JMockit](http://jmockit.googlecode.c
 support to the [Xtend](http://www.eclipse.org/xtend/).
 
 
+## Screencast about JMockit-Xtend
+
+If you have free 12 minutes you can watch the new screen cast on the [XtextCasts.org](http://xtextcasts.org/):
+- http://xtextcasts.org/episodes/13-jmockit-xtend
+
 ## Content ##
 
 - [Introduction](#Introduction)
