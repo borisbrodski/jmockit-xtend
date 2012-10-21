@@ -37,7 +37,9 @@ to integrate the popular java mocking framework
 [JMockit](http://jmockit.googlecode.com/) with the new
 [Xtend](http://www.eclipse.org/xtend/) language.
 The goal is not only to provide [almost complete](#DifferencesToJMockitAPI "Differences to the original JMockit API")
-original JMockit API to the Xtend but also [enhance the API]() using the power of the Xtend.
+original JMockit API to the Xtend but also [enhance the API](#NewCoolXtendAPI) using the power of the Xtend.
+
+The optimal use of the JMockit-Xtend can to achieved together with [Jnario](http://jnario.org/).
 
 JMockit-Xtend consists of a single java file [JMockitExtension.java](https://raw.github.com/borisbrodski/jmockit-xtend/master/src/org/eclipse/xtend/jmockit/JMockitExtension.java),
 and [Jnario](http://jnario.org/) tests.
