@@ -16,6 +16,7 @@ import org.eclipse.xtend.jmockit.test.expectations.*
 - "Result of the method calls can be specified with result setter"
 - "Result of the method calls can be specified with returns method"
 - "SetMaxTimes sets the maximal count of the method invocations"
+- "SetMinTimes sets the minimal count of the method invocations"
 - "SetTimes sets the count of the method invocations"
 - "Simple parameter matching with any() and with()"
 - "stub behaves like NonStrictExpectations"

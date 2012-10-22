@@ -29,6 +29,7 @@ If you have 12 minutes to spare, you can watch the new screen cast on the [Xtext
  - [Using `onInstance()`](#UsingOnInstance)
  - [Using `times=`](#UsingTimes)
  - [Using `maxTimes=`](#UsingMaxTimes)
+ - [Using `minTimes=`](#UsingMinTimes)
  - [Simple parameter matching with `any()` and `with()`](#SimpleParameterMatchingWithAnyAndWith)
  - [Parameter matching with JMockit with\*() methods](#ParameterMatchingWithWithXXX)
  - [Xtend-style dynamic parameter matching using `with []`](#XtendStyleParameterMatching)
@@ -354,6 +355,22 @@ The `maxTimes=` (or setMaxTimes()) setter specifies the maximal number of the ex
 mock [
     service.sendEmail()
     maxTimes = 5
+]
+``` 
+
+JMockit Tutorial: http://jmockit.googlecode.com/svn/trunk/www/tutorial/BehaviorBasedTesting.html#constraints
+
+<a href="#top">&#8593; top</a>
+
+<a name="UsingMinTimes"></a>
+### Using `minTimes=`
+
+The `minTimes=` (or setMinTimes()) setter specifies the minimal number of the expected calls to the mocked method.
+
+```java
+mock [
+	service.sendEmail()
+	minTimes = 2
 ]
 ``` 
 
