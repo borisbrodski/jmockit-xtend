@@ -473,7 +473,6 @@ stub [
 <a name="TODO"></a>
 ## TODO
 
-- Add minTimes
 - README - summarize differences to the JMockit API
 - Specifying default results
 - Iterated expectations
@@ -486,5 +485,6 @@ stub [
 - Reusing expectation and verification blocks
 - State-based testing with JMockit
 - forEachInvocation (see InvocationBlockModifier.java) 
+- Add withNull(T) method to allow null parameter matching with invoke()
 
 <a href="#top">&#8593; top</a>
