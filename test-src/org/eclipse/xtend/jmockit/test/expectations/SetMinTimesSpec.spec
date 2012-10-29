@@ -1,9 +1,9 @@
 package org.eclipse.xtend.jmockit.test.expectations
 
 import mockit.Mocked
-import mockit.internal.UnexpectedInvocation
 
 import static extension org.eclipse.xtend.jmockit.JMockitExtension.*
+import static extension org.jnario.lib.Should.*
 
 describe "SetMinTimes sets the minimal count of the method invocations" {
 	@Mocked

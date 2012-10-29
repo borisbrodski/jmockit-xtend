@@ -1,0 +1,13 @@
+package org.eclipse.xtend.jmockit.test
+
+import org.eclipse.xtend.jmockit.test.expectations.*
+import org.eclipse.xtend.jmockit.test.simple.*
+import org.eclipse.xtend.jmockit.test.expectations.*
+import org.eclipse.xtend.jmockit.test.expectations.*
+
+# All Jnario tests
+## Common tests
+- \org.eclipse.xtend.jmockit.test.simple.*\
+
+## Expectations tests
+- \org\.eclipse\.xtend\.jmockit\.test\.expectations\..*\
