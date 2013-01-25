@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="lib" path="lib/jmockit-0.999.16.jar"/>
+	<classpathentry kind="lib" path="lib/jmockit-1.0-junit-rules.jar" sourcepath="lib/jmockit-1.0-junit-rules-sources.jar"/>
 	<classpathentry kind="src" path="xtend-gen"/>
 	<classpathentry kind="con" path="org.jnario.JNARIO_CONTAINER"/>
 	<classpathentry kind="src" path="src"/>

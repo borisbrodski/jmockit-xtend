@@ -1,5 +1,8 @@
 package org.eclipse.xtend.jmockit.test.expectations;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
+
 public class ExpectationsAPI {
 	public ExpectationsAPI returnSelf() {
 		throw new RuntimeException("Not implemented");
@@ -135,5 +138,17 @@ public class ExpectationsAPI {
 	}
 	public String paramsObject(Object a) {
 		throw new RuntimeException("Not implemented");
+	}
+	public String paramsList(ArrayList<?> arrayList) {
+		throw new RuntimeException("Not implemented: paramsArrayList");
+	}
+	public String paramsList(LinkedList<?> arrayList) {
+		throw new RuntimeException("Not implemented: paramsLinkedList");
+	}
+	public String paramsPrivateString(String a) {
+		throw new RuntimeException("Not implemented");
+	}
+	public String callParamsPrivateString(String a) {
+		return paramsPrivateString(a);
 	}
 }

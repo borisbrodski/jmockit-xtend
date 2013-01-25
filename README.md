@@ -23,6 +23,8 @@ If you have 12 minutes to spare, you can watch the new screen cast on the [Xtext
  - [Expectations](#Expectations)
   - [Expectations using `mock []`](#StrictExpectationsUsingMock)
   - [Non strict expectations using `stub []`](#NonStrictExpectationsWithStub)
+  - [Dynamic partial mocking using `mock(class) []`](#DynamicPartialMockingWithMock)
+  - [Dynamic partial mocking using `stub(class) []`](#DynamicPartialMockingWithStub)
  - [Using `result=`](#UsingResult)
  - [Xtend-style dynamic result using `result= []`](#XtendStyleDynamicResult)
  - [Using `returns()`](#UsingReturns)
@@ -31,9 +33,11 @@ If you have 12 minutes to spare, you can watch the new screen cast on the [Xtext
  - [Using `maxTimes=`](#UsingMaxTimes)
  - [Using `minTimes=`](#UsingMinTimes)
  - [Simple parameter matching with `any()` and `with()`](#SimpleParameterMatchingWithAnyAndWith)
- - [Parameter matching with JMockit with\*() methods](#ParameterMatchingWithWithXXX)
+ - [Parameter matching with JMockit with*() methods](#ParameterMatchingWithWithXXX)
  - [Xtend-style dynamic parameter matching using `with []`](#XtendStyleParameterMatching)
-- [TODO](#TODO)
+ - [Mocking private methods](#MockingPrivateMethods)
+- [Specifying default results](#DefaultResults)
+- [TODO](#TODO)*
 
 <a name="Introduction"></a>
 ## Introduction
@@ -222,6 +226,36 @@ stub [
 ```
 
 JMockit Tutorial: http://jmockit.googlecode.com/svn/trunk/www/tutorial/BehaviorBasedTesting.html#strictness
+
+<a href="#top">&#8593; top</a>
+
+<a name="DynamicPartialMockingWithMock"></a>
+#### Dynamic partial mocking using `mock(class) []`
+
+The `mock(class) []` method can be used for the partial mocking.
+
+```java
+mock(typeof(MyClass)) [
+    service.call1
+]
+```
+
+JMockit Tutorial: http://jmockit.googlecode.com/svn/trunk/www/tutorial/BehaviorBasedTesting.html#partial
+
+<a href="#top">&#8593; top</a>
+
+<a name="DynamicPartialMockingWithStub"></a>
+#### Dynamic partial mocking using `stub(class) []`
+
+The `stub(class) []` method can be used for non-strict the partial mocking.
+
+```java
+stub(typeof(MyClass)) [
+    service.call1
+]
+```
+
+JMockit Tutorial: http://jmockit.googlecode.com/svn/trunk/www/tutorial/BehaviorBasedTesting.html#partial
 
 <a href="#top">&#8593; top</a>
 
@@ -470,11 +504,55 @@ stub [
 
 <a href="#top">&#8593; top</a>
 
+<a name="MockingPrivateMethods"></a>
+### Mocking private methods
+
+Private method mocking can be accomplished using one of overloaded `invoke()` extension methods: 
+
+```java
+stub [
+    invoke(object, "methodName", param1, param2)
+    result = "result"
+    
+    
+]
+```
+
+JMockit Tutorial: http://jmockit.googlecode.com/svn/trunk/www/tutorial/BehaviorBasedTesting.html#deencapsulation
+
+<a href="#top">&#8593; top</a>
+
+<a name="DefaultResults"></a>
+## Specifying default results
+
+Other that in the JMockit the default results can be specified within the test class.
+
+```java
+class MyTest {
+    @Mocked
+    MyAPI api
+    
+    @Input
+    int a = -1 // Return -1 for all methods returning "int"
+    
+    @Input
+    IOException e // Throw IOException for all methods declaring IOException
+    
+    def void myTest() {
+        assertThat(api.getInt(), is(-1))
+    }
+}
+```
+
+JMockit Tutorial: http://jmockit.googlecode.com/svn/trunk/www/tutorial/BehaviorBasedTesting.html#defaultResults
+
+
+<a href="#top">&#8593; top</a>
+
 <a name="TODO"></a>
 ## TODO
 
 - README - summarize differences to the JMockit API
-- Specifying default results
 - Iterated expectations
 - Explicit verification
 - Accessing private fields, methods and constructors

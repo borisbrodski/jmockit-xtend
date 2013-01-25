@@ -2,14 +2,15 @@ package org.eclipse.xtend.jmockit.test.expectations
 
 import mockit.Mocked
 import static extension org.eclipse.xtend.jmockit.JMockitExtension.*
+import mockit.internal.UnexpectedInvocation
 
-describe "stub behaves like NonStrictExpectations" {
+describe "mock behaves like Expectations" {
 	
 	@Mocked
 	ExpectationsAPI expectationsAPI
 	
-	fact "The order and number of call is not important" {
-		stub [
+	fact "The order and number of call is important" {
+		mock [
 			expectationsAPI.returnString
 			result = "My string"
 			
@@ -18,20 +19,19 @@ describe "stub behaves like NonStrictExpectations" {
 		]
 		
 		expectationsAPI.returnString => "My string"
-		expectationsAPI.returnString => "My string"
 		expectationsAPI.returnInt => 12345
-		expectationsAPI.returnInt => 12345
-		expectationsAPI.returnString => "My string"
-		expectationsAPI.returnInt => 12345
-		expectationsAPI.returnSelf => null
+		expectationsAPI.returnString throws UnexpectedInvocation
+		expectationsAPI.returnInt throws UnexpectedInvocation
+		expectationsAPI.returnString throws UnexpectedInvocation
+		expectationsAPI.returnSelf throws UnexpectedInvocation
 	}
 	
 	fact "Dynamic partial stub" {
-		stub(typeof(ExpectationsAPI)) [
+		mock(typeof(ExpectationsAPI)) [
 			(new ExpectationsAPI).returnString
 			result = "My string 1"
 		]
-		
+
 		(new ExpectationsAPI).returnString => "My string 1" 
 		try {
 			(new ExpectationsAPI).returnVoid
@@ -39,6 +39,11 @@ describe "stub behaves like NonStrictExpectations" {
 		} catch (RuntimeException exception) {
 			exception.message => "Not implemented"
 		}
-		(new ExpectationsAPI).returnString => "My string 1" 
+		try {
+			(new ExpectationsAPI).returnString
+			fail
+		} catch (RuntimeException exception) {
+			exception.message => "Not implemented"
+		}
 	}
 }
