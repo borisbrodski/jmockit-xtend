@@ -38,6 +38,7 @@ If you have 12 minutes to spare, you can watch the new screen cast on the [Xtext
  - [Mocking private methods](#MockingPrivateMethods)
 - [Specifying default results](#DefaultResults)
 - [TODO](#TODO)*
+- [License](#License)
 
 <a name="Introduction"></a>
 ## Introduction
@@ -141,9 +142,9 @@ stub [
     service.generateEMail(any, any, any)
     result = [ String to, String subject, String body |
         '''
-            To: «to»
-            Subject: «subject»
-            «body»
+            To: Â«toÂ»
+            Subject: Â«subjectÂ»
+            Â«bodyÂ»
         '''.toString
     ]
 ]
@@ -566,3 +567,10 @@ JMockit Tutorial: http://jmockit.googlecode.com/svn/trunk/www/tutorial/BehaviorB
 - Add withNull(T) method to allow null parameter matching with invoke()
 
 <a href="#top">&#8593; top</a>
+
+<a name="License"></a>
+## License
+
+JMockit-Xtend is dual-licensed (available under either MIT or EPL licenses):
+- [MIT License](http://opensource.org/licenses/mit-license.php)
+- [EPL](http://www.eclipse.org/org/documents/epl-v10.php)
