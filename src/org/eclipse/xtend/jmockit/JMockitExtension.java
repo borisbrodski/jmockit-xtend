@@ -59,6 +59,7 @@ import mockit.internal.expectations.argumentMatching.StringContainmentMatcher;
 import mockit.internal.expectations.argumentMatching.StringPrefixMatcher;
 import mockit.internal.expectations.argumentMatching.StringSuffixMatcher;
 import mockit.internal.expectations.transformation.ActiveInvocations;
+import mockit.internal.util.ConstructorReflection;
 import mockit.internal.util.MethodReflection;
 
 import org.eclipse.xtext.xbase.lib.Functions.Function0;
@@ -859,6 +860,7 @@ public class JMockitExtension {
      * @throws IllegalArgumentException if a null reference was provided for a parameter
      */
     // TODO Test
+    @SuppressWarnings("unchecked")
     public static < T > T invoke(Expectations expectations, Class< ? > methodOwner, String methodName,
                                  Object... methodArgs) {
         return (T) MethodReflection.invoke(methodOwner, null, methodName, methodArgs);
@@ -883,6 +885,7 @@ public class JMockitExtension {
      * @see #newInnerInstance(String, Object, Object...)
      */
     // TODO Test
+    @SuppressWarnings("unchecked")
     public static < T > T newInstance(Expectations expectations, String className, Class< ? >[] parameterTypes,
                                       Object... initArgs) {
         return (T) ConstructorReflection.newInstance(className, parameterTypes, initArgs);
@@ -901,6 +904,7 @@ public class JMockitExtension {
      * @throws IllegalArgumentException if one of the given arguments is {@code null}
      */
     // TODO Test
+    @SuppressWarnings("unchecked")
     public static < T > T newInstance(Expectations expectations, String className, Object... nonNullInitArgs) {
         return (T) ConstructorReflection.newInstance(className, nonNullInitArgs);
     }
@@ -917,6 +921,7 @@ public class JMockitExtension {
      *            instead
      */
     // TODO Test
+    @SuppressWarnings("unchecked")
     public static < T > T newInnerInstance(Expectations expectations, String innerClassSimpleName,
                                            Object outerClassInstance, Object... nonNullInitArgs) {
         return (T) ConstructorReflection.newInnerInstance(innerClassSimpleName, outerClassInstance, nonNullInitArgs);
