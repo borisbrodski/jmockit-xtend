@@ -557,7 +557,6 @@ JMockit Tutorial: http://jmockit.googlecode.com/svn/trunk/www/tutorial/BehaviorB
 - Iterated expectations
 - Explicit verification
 - Accessing private fields, methods and constructors
-- Dynamic partial mocking
 - Cascading mocks
 - Capturing internal instances of mocked types
 - Automatic instantiation and injection of tested classes
