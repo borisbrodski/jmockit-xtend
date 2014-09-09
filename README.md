@@ -3,6 +3,9 @@
 Collection of the extension methods adding [JMockit](http://jmockit.googlecode.com/)
 support to the [Xtend](http://www.eclipse.org/xtend/).
 
+Versions:
+- Xtend: 2.6.0
+- JMockit: 1.10
 
 ## Screencast about JMockit-Xtend
 
@@ -25,6 +28,7 @@ If you have 12 minutes to spare, you can watch the new screen cast on the [Xtext
   - [Non strict expectations using `stub []`](#NonStrictExpectationsWithStub)
   - [Dynamic partial mocking using `mock(class) []`](#DynamicPartialMockingWithMock)
   - [Dynamic partial mocking using `stub(class) []`](#DynamicPartialMockingWithStub)
+  - [Specifying count of iterations for `mock`/`stub` expectations](#CountOfIterationWithMockAndStub)
  - [Using `result=`](#UsingResult)
  - [Xtend-style dynamic result using `result= []`](#XtendStyleDynamicResult)
  - [Using `returns()`](#UsingReturns)
@@ -61,7 +65,7 @@ and [Jnario](http://jnario.org/) tests.
 ## Download
 
 You can download the JMockitExtension.java from the master branch
-[here](https://raw.github.com/borisbrodski/jmockit-xtend/master/src/org/eclipse/xtend/jmockit/JMockitExtension.java) 
+[here](https://raw.github.com/borisbrodski/jmockit-xtend/master/src/org/eclipse/xtend/jmockit/JMockitExtension.java)
 and then simply add the downloaded file to your java project.
 
 <a href="#top">&#8593; top</a>
@@ -85,13 +89,13 @@ Example:
 
 ```java
 stub [
-    permissionHelper.allowToSend       // non-strict expectations 
+    permissionHelper.allowToSend       // non-strict expectations
     result = true
 ]
 
 mock [
     permissionHelper.prepareOperation       // strict expectations
-    permissionHelper.performOperation       // strict expectations 
+    permissionHelper.performOperation       // strict expectations
 ]
 ```
 
@@ -128,7 +132,7 @@ It's very easy to match the parameter using [Xtend-Lambda Expressions](http://ww
 stub [
     service.acceptString(with [ length > 5 ])
 ]
-``` 
+```
 
 <a href="#top">&#8593; top</a>
 
@@ -148,7 +152,7 @@ stub [
         '''.toString
     ]
 ]
-``` 
+```
 
 <a href="#top">&#8593; top</a>
 
@@ -177,7 +181,7 @@ class MyTest {
             service.doGreeting
             result = "Hello World"
         ]
-        
+
         assertThat(service.doGreeting, is("Hello World"))
     }
 ```
@@ -233,7 +237,7 @@ JMockit Tutorial: http://jmockit.googlecode.com/svn/trunk/www/tutorial/BehaviorB
 <a name="DynamicPartialMockingWithMock"></a>
 #### Dynamic partial mocking using `mock(class) []`
 
-The `mock(class) []` method can be used for the partial mocking.
+The `mock(classOrObject) []` method can be used for the partial mocking.
 
 ```java
 mock(typeof(MyClass)) [
@@ -241,22 +245,74 @@ mock(typeof(MyClass)) [
 ]
 ```
 
+You may pass up to 5 classes or objects like this: `mock(obj1, Class2, obj3, obj4, Class5)`. If you need to pass more
+parameters you should use more verbose syntax specifying the closure first:
+
+```java
+mock([
+    obj1.toString
+    result = "obj1"
+], obj1, Class2, obj3, obj4, Class5, Class6, obj7, obj8)
+```
+
 JMockit Tutorial: http://jmockit.googlecode.com/svn/trunk/www/tutorial/BehaviorBasedTesting.html#partial
 
 <a href="#top">&#8593; top</a>
 
 <a name="DynamicPartialMockingWithStub"></a>
-#### Dynamic partial mocking using `stub(class) []`
+#### Dynamic partial mocking using `stub(classOrObject) []`
 
-The `stub(class) []` method can be used for non-strict the partial mocking.
+The `stub(classOrObject) []` method can be used for non-strict the partial mocking.
 
 ```java
-stub(typeof(MyClass)) [
+stub(MyClass) [
     service.call1
 ]
 ```
 
+You may pass up to 5 classes or objects like this: `stub(obj1, Class2, obj3, obj4, Class5)`. If you need to pass more
+parameters you should use more verbose syntax specifying the closure first:
+
+```java
+stub([
+    obj1.toString
+    result = "obj1"
+], obj1, Class2, obj3, obj4, Class5, Class6, obj7, obj8)
+```
+
 JMockit Tutorial: http://jmockit.googlecode.com/svn/trunk/www/tutorial/BehaviorBasedTesting.html#partial
+
+<a href="#top">&#8593; top</a>
+
+<a name="CountOfIterationWithMockAndStub"></a>
+#### Specifying count of iterations for `mock`/`stub` expectations
+
+You can specify the count of iterations as a first int parameter of the `mock`/`stub` expectation block:
+
+```java
+stub(10) [
+    service.call1
+    returns(1, 2, 3)
+]
+```
+
+You can also specify the count of iterations and dynamic partial mocking objects at the same time:
+
+```java
+stub(10, Class1, obj2) [
+    service.call1
+    returns(1, 2, 3)
+]
+```
+
+or for that 5 partial mocking parameters:
+
+```java
+stub([
+    service.call1
+    returns(1, 2, 3)
+], 10, Class1, obj2, Class3, obj4, obj5, obj6, obj7, Class8)
+```
 
 <a href="#top">&#8593; top</a>
 
@@ -307,7 +363,7 @@ The lambda expression will be evaluated each time the mocked method is invoked.
 mock [
     service.getUniqueId
     result = [| id = id + 1 ]
-    
+
     service.calculateSum(anyInt, anyInt)
     result = [ int a, int b | a + b ]
 ]
@@ -320,7 +376,7 @@ mock [
 
 The `returns` method can be also used to set one or more results
 but can't be used to throw an exception as a result of the mocked method call.
-For further information consult the JMockit documentation. (e. g. http://jmockit.googlecode.com/svn/trunk/www/tutorial/BehaviorBasedTesting.html) 
+For further information consult the JMockit documentation. (e. g. http://jmockit.googlecode.com/svn/trunk/www/tutorial/BehaviorBasedTesting.html)
 
 ```java
 mock [
@@ -375,7 +431,7 @@ mock [
     service.sendEmail()
     times = 3
 ]
-``` 
+```
 
 JMockit Tutorial: http://jmockit.googlecode.com/svn/trunk/www/tutorial/BehaviorBasedTesting.html#constraints
 
@@ -391,7 +447,7 @@ mock [
     service.sendEmail()
     maxTimes = 5
 ]
-``` 
+```
 
 JMockit Tutorial: http://jmockit.googlecode.com/svn/trunk/www/tutorial/BehaviorBasedTesting.html#constraints
 
@@ -407,7 +463,7 @@ mock [
 	service.sendEmail()
 	minTimes = 2
 ]
-``` 
+```
 
 JMockit Tutorial: http://jmockit.googlecode.com/svn/trunk/www/tutorial/BehaviorBasedTesting.html#constraints
 
@@ -427,12 +483,12 @@ stub [
     service.max(1, 2)               // ok    - no use of any()
     service.max(anyInt, with(3))    // ok    - using with() for the values
     service.max(anyInt, 3)          // ERROR - any() used, but the values without with()
-    
-    stringBuilder.append(anyChar)        // Match java.lang.StringBuilder.append(char) 
-    stringBuilder.append(with(3.3))      // Match java.lang.StringBuilder.append(double) 
-    stringBuilder.append(withFloat(3.3)) // Match java.lang.StringBuilder.append(float) 
+
+    stringBuilder.append(anyChar)        // Match java.lang.StringBuilder.append(char)
+    stringBuilder.append(with(3.3))      // Match java.lang.StringBuilder.append(double)
+    stringBuilder.append(withFloat(3.3)) // Match java.lang.StringBuilder.append(float)
 ]
-``` 
+```
 
 **WARNING**: Unlike JMockit API, there are `any()` extension methods, that has the generic definition:
 ```java
@@ -476,7 +532,7 @@ Following JMockit `with\*()` methods are supported within "expectations" and "ve
 - `withSubstring(T)`
 - `withSuffix(T)`
 
-The JMockit `with(Delegate)` is renamed to `withDelegate(Delegate)` allowing the Xtend-lambda expression to be used with the simple `with []` syntax 
+The JMockit `with(Delegate)` is renamed to `withDelegate(Delegate)` allowing the Xtend-lambda expression to be used with the simple `with []` syntax
 
 Following JMockit `with\*()` methods are supported only within the "verifications" block:
 
@@ -496,7 +552,7 @@ all primitive types.
 stub [
     service.processString(with [ length > 5 ])
     service.processString(with [ it?.length > 5 ]) // Prevents NullPointerException if it==null
-                                                   // If it==null then (it?.length) evaluates to 0 
+                                                   // If it==null then (it?.length) evaluates to 0
     service.processInt(withInt [ it > 0 ])
 
     service.processInt(with [ it > 0 ])  // NullPointerException: withInt should be used
@@ -508,14 +564,14 @@ stub [
 <a name="MockingPrivateMethods"></a>
 ### Mocking private methods
 
-Private method mocking can be accomplished using one of overloaded `invoke()` extension methods: 
+Private method mocking can be accomplished using one of overloaded `invoke()` extension methods:
 
 ```java
 stub [
     invoke(object, "methodName", param1, param2)
     result = "result"
-    
-    
+
+
 ]
 ```
 
@@ -532,13 +588,13 @@ Other that in the JMockit the default results can be specified within the test c
 class MyTest {
     @Mocked
     MyAPI api
-    
+
     @Input
     int a = -1 // Return -1 for all methods returning "int"
-    
+
     @Input
     IOException e // Throw IOException for all methods declaring IOException
-    
+
     def void myTest() {
         assertThat(api.getInt(), is(-1))
     }
@@ -562,7 +618,7 @@ JMockit Tutorial: http://jmockit.googlecode.com/svn/trunk/www/tutorial/BehaviorB
 - Automatic instantiation and injection of tested classes
 - Reusing expectation and verification blocks
 - State-based testing with JMockit
-- forEachInvocation (see InvocationBlockModifier.java) 
+- forEachInvocation (see InvocationBlockModifier.java)
 - Add withNull(T) method to allow null parameter matching with invoke()
 
 <a href="#top">&#8593; top</a>

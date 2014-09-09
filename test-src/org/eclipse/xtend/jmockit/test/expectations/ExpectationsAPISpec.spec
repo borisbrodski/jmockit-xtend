@@ -3,8 +3,6 @@ package org.eclipse.xtend.jmockit.test.expectations
 import java.lang.reflect.InvocationTargetException
 import java.util.List
 
-import static extension org.jnario.lib.Should.*
-
 describe "ExpectationsAPI without mock" {
 	fact "All methods throw RuntimeException" {
 		for (method : typeof(ExpectationsAPI).declaredMethods) {
@@ -13,11 +11,11 @@ describe "ExpectationsAPI without mock" {
 				method.invoke(new ExpectationsAPI, parameters.toArray)
 			} catch (InvocationTargetException e) {
 				(e.cause instanceof RuntimeException) => true
-			} 
+			}
 		}
 	}
-	
-	def private buildParameters(List<Class> parameterTypes) {
+
+	def private buildParameters(List<Class<?>> parameterTypes) {
 		parameterTypes.map [
 			switch (it) {
 				case typeof(int):
