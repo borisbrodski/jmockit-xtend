@@ -137,7 +137,19 @@ describe "with*() methods work as expected" {
 
 	fact "with(T, Object) works" {
 		stub [
-			expectationsAPI.paramsLong(with(1L, new MoreThat100))
+			expectationsAPI.paramsLong(with(1L, 101L))
+			result = "match1"
+		]
+
+		expectationsAPI.paramsLong(101L) => "match1"
+		expectationsAPI.paramsLong(102L) => null
+		expectationsAPI.paramsLong(100L) => null
+	}
+
+	fact "with(Delegate) works" {
+		stub [
+			val Delegate<Long> a = new MoreThat100
+			expectationsAPI.paramsLong(withDelegate(a))
 			result = "match1"
 		]
 
@@ -147,10 +159,10 @@ describe "with*() methods work as expected" {
 		expectationsAPI.paramsLong(99L) => null
 	}
 
-	fact "with(Delegate) works" {
+	fact "with(T, Delegate) works" {
 		stub [
 			val Delegate<Long> a = new MoreThat100
-			expectationsAPI.paramsLong(withDelegate(a))
+			expectationsAPI.paramsLong(withDelegate(1L, a))
 			result = "match1"
 		]
 

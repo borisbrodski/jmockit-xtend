@@ -1,6 +1,9 @@
 package mockit;
 
-import mockit.internal.expectations.argumentMatching.EqualityMatcher;
+import java.util.HashMap;
+
+import mockit.internal.expectations.argumentMatching.LenientEqualityMatcher;
+import mockit.internal.expectations.argumentMatching.NullityMatcher;
 import mockit.internal.expectations.transformation.ActiveInvocations;
 
 import org.eclipse.xtext.xbase.lib.Functions.Function0;
@@ -182,12 +185,11 @@ public final class ExpectationsDelegate {
     }
 
     public <T> T with(T value) {
-        expectations.getCurrentPhase().addArgMatcher(new EqualityMatcher(value));
-        return value;
+        return with(value, value);
     }
     public <T> T with(final Function1<T, Boolean> lambdaMatcher) throws Exception {
         if (lambdaMatcher == null) {
-            expectations.getCurrentPhase().addArgMatcher(new EqualityMatcher(null));
+            expectations.getCurrentPhase().addArgMatcher(NullityMatcher.INSTANCE);
             return null;
         }
         return expectations.with(new Delegate<T>() {
@@ -302,12 +304,18 @@ public final class ExpectationsDelegate {
         return 'c';
     }
 
-    public <T> T with(T argValue, Object argumentMatcher) {
-        return expectations.with(argValue, argumentMatcher);
+    public <T> T with(T argValue, Object value) {
+        expectations.getCurrentPhase().addArgMatcher(new LenientEqualityMatcher(value, new HashMap<Object, Object>()));
+        return argValue;
     }
 
     public <T> T withDelegate(Delegate<T> delegateObjectWithInvocationHandlerMethod) {
         return expectations.with(delegateObjectWithInvocationHandlerMethod);
+    }
+
+    public <T> T withDelegate(T arg, Delegate<T> delegateObjectWithInvocationHandlerMethod) {
+    	expectations.with(delegateObjectWithInvocationHandlerMethod);
+    	return arg;
     }
 
     public <T> T withAny(T t) {

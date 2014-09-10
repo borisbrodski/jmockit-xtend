@@ -43,7 +43,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<jmockit.version>1.8</jmockit.version>
+		<jmockit.version>1.10</jmockit.version>
 		<xtend.version>2.6.0</xtend.version>
 		<jnario.version>1.0.0</jnario.version>
 	</properties>
@@ -132,6 +132,18 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
 					</argLine>
 				</configuration>
 			</plugin>
+	        <plugin>
+	            <groupId>org.apache.maven.plugins</groupId>
+	            <artifactId>maven-source-plugin</artifactId>
+	            <executions>
+	                <execution>
+	                    <id>attach-sources</id>
+	                    <goals>
+	                        <goal>jar</goal>
+	                    </goals>
+	                </execution>
+	            </executions>
+	        </plugin>
 		</plugins>
 		<pluginManagement>
 			<plugins>

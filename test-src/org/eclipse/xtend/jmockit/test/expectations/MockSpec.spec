@@ -7,25 +7,73 @@ import static org.junit.Assert.*
 
 describe "mock behaves like Expectations" {
 
-	@Mocked
-	ExpectationsAPI expectationsAPI
+    context "Non-partial mocking" {
+        @Mocked
+        ExpectationsAPI expectationsAPI
 
-	fact "The order and number of call is important" {
-		mock [
-			expectationsAPI.returnString
-			result = "My string"
+        fact "The order and number of call is important" {
+            mock [
+                expectationsAPI.returnString
+                result = "My string"
 
-			expectationsAPI.returnInt
-			result = 12345
-		]
+                expectationsAPI.returnInt
+                result = 12345
+            ]
 
-		expectationsAPI.returnString => "My string"
-		expectationsAPI.returnInt => 12345
-		expectationsAPI.returnString throws UnexpectedInvocation
-		expectationsAPI.returnInt throws UnexpectedInvocation
-		expectationsAPI.returnString throws UnexpectedInvocation
-		expectationsAPI.returnSelf throws UnexpectedInvocation
-	}
+            expectationsAPI.returnString => "My string"
+            expectationsAPI.returnInt => 12345
+            expectationsAPI.returnString throws UnexpectedInvocation
+            expectationsAPI.returnInt throws UnexpectedInvocation
+            expectationsAPI.returnString throws UnexpectedInvocation
+            expectationsAPI.returnSelf throws UnexpectedInvocation
+        }
+
+        fact "stub with iterations" {
+            stub(2) [
+                expectationsAPI.returnString
+                returns("a", "b", "c")
+
+                expectationsAPI.returnInt
+                result = 1
+                result = 2
+            ]
+
+            expectationsAPI.returnString => "a"
+            expectationsAPI.returnString => "b"
+            expectationsAPI.returnString => "c"
+            expectationsAPI.returnString => "c" // TODO Fix after issue resolved: https://github.com/jmockit/jmockit1/issues/60
+
+            expectationsAPI.returnInt => 1
+            expectationsAPI.returnInt => 2
+            expectationsAPI.returnInt => 2 // TODO Fix after issue resolved: https://github.com/jmockit/jmockit1/issues/60
+
+            expectationsAPI.returnSelf => null
+        }
+
+    }
+
+    fact "Partially mocking" {
+        mock(ExpectationsAPI)
+
+        mock [
+            (new ExpectationsAPI).returnString
+            result = "My string 1"
+        ]
+
+        (new ExpectationsAPI).returnString => "My string 1"
+        try {
+            (new ExpectationsAPI).returnVoid
+            fail
+        } catch (RuntimeException exception) {
+            exception.message => "Not implemented"
+        }
+        try {
+            (new ExpectationsAPI).returnString
+            fail
+        } catch (RuntimeException exception) {
+            exception.message => "Not implemented"
+        }
+    }
 
     fact "Dynamic partial mock" {
         mock(ExpectationsAPI) [
@@ -166,35 +214,6 @@ describe "mock behaves like Expectations" {
         o4.toString => "(o4)"
         o5.toString => "(o5)"
         o6.toString => "(o6)"
-    }
-
-    fact "mock with iterations" {
-        mock(2) [
-            expectationsAPI.returnString
-            returns("a", "b", "c")
-
-            expectationsAPI.returnInt
-            result = 1
-            result = 2
-        ]
-
-        expectationsAPI.returnString => "a"
-        expectationsAPI.returnString => "b"
-        expectationsAPI.returnString => "c"
-
-        expectationsAPI.returnInt => 1
-        expectationsAPI.returnInt => 2
-
-        expectationsAPI.returnString => "c"
-        expectationsAPI.returnString => "c"
-        expectationsAPI.returnString => "c"
-
-        expectationsAPI.returnInt => 2
-        expectationsAPI.returnInt => 2
-
-        expectationsAPI.returnString throws UnexpectedInvocation
-        expectationsAPI.returnInt throws UnexpectedInvocation
-        expectationsAPI.returnSelf throws UnexpectedInvocation
     }
 
     fact "mock with iterations and partial mockbing (1 parameters)" {
