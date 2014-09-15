@@ -65,6 +65,19 @@ describe "stub behaves like NonStrictExpectations" {
         (new ExpectationsAPI).returnString => "My string 1"
     }
 
+    fact "Partially stub single class returns instance of the class" {
+        val api = stub(ExpectationsAPI)
+
+        stub [
+            api.returnString
+            result = "My string 1"
+        ]
+
+        api.returnString => "My string 1"
+        api.returnVoid throws NotMocked
+        api.returnString => "My string 1"
+    }
+
     fact "Dynamic partial stub (1 parameters)" {
         stub(ExpectationsAPI) [
             (new ExpectationsAPI).returnString

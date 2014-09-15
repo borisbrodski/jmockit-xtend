@@ -86,6 +86,11 @@ public class JMockitExtension {
             e.apply(new ExpectationsDelegate(this));
         }};
     }
+    public static <T> T stub(Class<T> singleClass) {
+    	new NonStrictExpectations(singleClass) {{
+    	}};
+    	return ins(singleClass);
+    }
     public static void stub(Class<?> ... partiallyMockedClasses) {
         new NonStrictExpectations((Object[])partiallyMockedClasses) {{
         }};
@@ -268,23 +273,15 @@ public class JMockitExtension {
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
     public static void mock(final XtendExpectations e) {
         new Expectations() {{
             e.apply(new ExpectationsDelegate(this));
         }};
+    }
+    public static <T> T mock(Class<T> singleClass) {
+    	new NonStrictExpectations(singleClass) {{
+    	}};
+    	return ins(singleClass);
     }
     public static void mock(Class<?> ... partiallyMockedClasses) {
         new Expectations((Object[])partiallyMockedClasses) {{

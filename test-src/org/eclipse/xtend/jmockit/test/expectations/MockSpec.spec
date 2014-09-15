@@ -70,7 +70,20 @@ describe "mock behaves like Expectations" {
 
         (new ExpectationsAPI).returnString => "My string 1"
         (new ExpectationsAPI).returnVoid throws NotMocked
-        (new ExpectationsAPI).returnString throws NotMocked
+        (new ExpectationsAPI).returnString => "My string 1"
+    }
+
+    fact "Partially mock single class returns instance of the class" {
+        val api = mock(ExpectationsAPI)
+
+        mock [
+            api.returnString
+            result = "My string 1"
+        ]
+
+        api.returnString => "My string 1"
+        api.returnVoid throws NotMocked
+        api.returnString => "My string 1"
     }
 
     fact "Dynamic partial mock (1 parameters)" {

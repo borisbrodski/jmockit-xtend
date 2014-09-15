@@ -265,6 +265,31 @@ mock([
 ], obj1, Class2, obj3, obj4, Class5, Class6, obj7, obj8)
 ```
 
+`mock(class)` or `stub(class)` methods can also be used to initiate a partial mocking:
+
+```java
+mock(Class1, Class2)
+```
+
+Expectations about `Class1` and `Class2` may be specified later on:
+
+```java
+mock [
+	new Class1().method1
+	ins(Class2).method2
+]
+```
+
+Defining single partial mock can be combined with creation of an instance of the partial mocked class:
+
+```java
+val obj = mock(Class1)
+
+mock [
+	obj.method1
+]
+```
+
 JMockit Tutorial: http://jmockit.googlecode.com/svn/trunk/www/tutorial/BehaviorBasedTesting.html#partial
 
 <a href="#top">&#8593; top</a>
@@ -297,6 +322,31 @@ stub([
     obj1.toString
     result = "obj1"
 ], obj1, Class2, obj3, obj4, Class5, Class6, obj7, obj8)
+```
+
+`stub(class)` or `mock(class)` methods can also be used to initiate a partial mocking:
+
+```java
+stub(Class1, Class2)
+```
+
+Expectations about `Class1` and `Class2` may be specified later on:
+
+```java
+stub [
+	new Class1().method1
+	ins(Class2).method2
+]
+```
+
+Defining single partial stub can be combined with creation of an instance of the partial mocked class:
+
+```java
+val obj = stub(Class1)
+
+stub [
+	obj.method1
+]
 ```
 
 JMockit Tutorial: http://jmockit.googlecode.com/svn/trunk/www/tutorial/BehaviorBasedTesting.html#partial
