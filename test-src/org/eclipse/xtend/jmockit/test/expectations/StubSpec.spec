@@ -1,8 +1,9 @@
 package org.eclipse.xtend.jmockit.test.expectations
 
 import mockit.Mocked
-import static org.junit.Assert.*
-import static extension org.eclipse.xtend.jmockit.JMockitExtension.*
+import mockit.internal.UnexpectedInvocation
+
+import static org.eclipse.xtend.jmockit.JMockitExtension.*
 
 describe "stub behaves like NonStrictExpectations" {
 
@@ -31,23 +32,16 @@ describe "stub behaves like NonStrictExpectations" {
         fact "stub with iterations" {
             stub(2) [
                 expectationsAPI.returnString
-                returns("a", "b", "c")
-
-                expectationsAPI.returnInt
-                result = 1
-                result = 2
+                result = "a"
+                maxTimes = 2 // Get multiplied by iteration count (2)
             ]
 
             expectationsAPI.returnString => "a"
-            expectationsAPI.returnString => "b"
-            expectationsAPI.returnString => "c"
-            expectationsAPI.returnString => "c" // TODO Fix after issue resolved: https://github.com/jmockit/jmockit1/issues/60
-
-            expectationsAPI.returnInt => 1
-            expectationsAPI.returnInt => 2
-            expectationsAPI.returnInt => 2 // TODO Fix after issue resolved: https://github.com/jmockit/jmockit1/issues/60
-
-            expectationsAPI.returnSelf => null
+            expectationsAPI.returnString => "a"
+            expectationsAPI.returnString => "a"
+            expectationsAPI.returnString => "a"
+        	expectationsAPI.returnString throws UnexpectedInvocation
+            expectationsAPI.returnSelf throws UnexpectedInvocation // TODO See JMockit issue #66
         }
     }
 
@@ -60,277 +54,736 @@ describe "stub behaves like NonStrictExpectations" {
         ]
 
         (new ExpectationsAPI).returnString => "My string 1"
-        try {
-            (new ExpectationsAPI).returnVoid
-            fail
-        } catch (RuntimeException exception) {
-            exception.message => "Not implemented"
-        }
+        (new ExpectationsAPI).returnVoid throws NotMocked
         (new ExpectationsAPI).returnString => "My string 1"
     }
 
-    fact "Dynamic partial stub" {
+    fact "Dynamic partial stub (1 parameters)" {
         stub(ExpectationsAPI) [
             (new ExpectationsAPI).returnString
             result = "My string 1"
         ]
 
         (new ExpectationsAPI).returnString => "My string 1"
-        try {
-            (new ExpectationsAPI).returnVoid
-            fail
-        } catch (RuntimeException exception) {
-            exception.message => "Not implemented"
-        }
+        (new ExpectationsAPI).returnVoid throws NotMocked
         (new ExpectationsAPI).returnString => "My string 1"
     }
 
+    fact "Dynamic partial stub with instance parameters (1 parameters)" {
+        stub(ExpectationsAPI) [ it, api |
+            api.returnString
+            result = "My string 1"
+        ]
+
+        (new ExpectationsAPI).returnString => "My string 1"
+        (new ExpectationsAPI).returnVoid throws NotMocked
+        (new ExpectationsAPI).returnString => "My string 1"
+    }
+
+    fact "Dynamic partial stub instances (1 parameters)" {
+    	val api = new ExpectationsAPI()
+        stub(api) [
+            api.returnString
+            result = "My string 1"
+        ]
+
+        api.returnString => "My string 1"
+        (new ExpectationsAPI).returnString throws NotMocked
+        (new ExpectationsAPI).returnVoid throws NotMocked
+    }
+
+
+    fact "Dynamic partial stub with iterations (1 parameters)" {
+        stub(2, ExpectationsAPI) [
+            (new ExpectationsAPI).returnString
+            maxTimes = 2
+            result = "My string 1"
+        ]
+
+        (new ExpectationsAPI).returnString => "My string 1"
+        (new ExpectationsAPI).returnString => "My string 1"
+        (new ExpectationsAPI).returnString => "My string 1"
+        (new ExpectationsAPI).returnString => "My string 1"
+        (new ExpectationsAPI).returnVoid throws NotMocked
+        (new ExpectationsAPI).returnString throws UnexpectedInvocation
+    }
+
+    fact "Dynamic partial stub with instance parameters with iterations (1 parameters)" {
+        stub(2, ExpectationsAPI) [ it, api |
+            api.returnString
+            maxTimes = 2
+            result = "My string 1"
+        ]
+
+        (new ExpectationsAPI).returnString => "My string 1"
+        (new ExpectationsAPI).returnString => "My string 1"
+        (new ExpectationsAPI).returnString => "My string 1"
+        (new ExpectationsAPI).returnString => "My string 1"
+        (new ExpectationsAPI).returnVoid throws NotMocked
+        (new ExpectationsAPI).returnString throws UnexpectedInvocation
+    }
+
+    fact "Dynamic partial stub instances with iterations (1 parameters)" {
+        val o1 = new PartialMock1API
+        stub(2, o1) [
+            o1.toBeMocked
+            maxTimes = 2
+            result = "(o1)"
+        ]
+        o1.toBeMocked => "(o1)"
+        o1.toBeMocked => "(o1)"
+        o1.toBeMocked => "(o1)"
+        o1.toBeMocked => "(o1)"
+        o1.toBeMocked throws UnexpectedInvocation
+    }
+
     fact "Dynamic partial stub (2 parameters)" {
-        val o1 = new Object
-        val o2 = new Object
-        stub(o1, o2) [
-            o1.toString
+        stub(PartialMock1API, PartialMock2API) [
+            new PartialMock1API().toBeMocked
             result = "(o1)"
 
-            o2.toString
+            new PartialMock2API().toBeMocked
             result = "(o2)"
         ]
-        o1.toString => "(o1)"
-        o2.toString => "(o2)"
+
+        new PartialMock1API().toBeMocked => "(o1)"
+        new PartialMock2API().toBeMocked => "(o2)"
+        new PartialMock1API().notToBeMocked throws NotMocked
+        new PartialMock2API().notToBeMocked throws NotMocked
+    }
+
+    fact "Dynamic partial stub with instance parameters (2 parameters)" {
+        stub(PartialMock1API, PartialMock2API) [it, api1, api2 |
+            api1.toBeMocked
+            result = "(o1)"
+
+            api2.toBeMocked
+            result = "(o2)"
+        ]
+        new PartialMock1API().toBeMocked => "(o1)"
+        new PartialMock2API().toBeMocked => "(o2)"
+        new PartialMock1API().notToBeMocked throws NotMocked
+        new PartialMock2API().notToBeMocked throws NotMocked
+    }
+
+    fact "Dynamic partial stub instances (2 parameters)" {
+        val o1 = new PartialMock1API
+        val o2 = new PartialMock1API
+        stub(o1, o2) [
+            o1.toBeMocked
+            result = "(o1)"
+
+            o2.toBeMocked
+            result = "(o2)"
+        ]
+        o1.toBeMocked => "(o1)"
+        o2.toBeMocked => "(o2)"
+    }
+
+    fact "Dynamic partial stub with iterations (2 parameters)" {
+        stub(2, PartialMock1API, PartialMock2API) [
+            new PartialMock1API().toBeMocked
+            result = "(o1)"
+
+            new PartialMock2API().toBeMocked
+            maxTimes = 2
+            result = "(o2)"
+        ]
+
+        new PartialMock1API().toBeMocked => "(o1)"
+        new PartialMock2API().toBeMocked => "(o2)"
+        new PartialMock2API().toBeMocked => "(o2)"
+        new PartialMock2API().toBeMocked => "(o2)"
+        new PartialMock2API().toBeMocked => "(o2)"
+        new PartialMock1API().notToBeMocked throws NotMocked
+        new PartialMock2API().notToBeMocked throws NotMocked
+        new PartialMock2API().toBeMocked throws UnexpectedInvocation
+    }
+
+    fact "Dynamic partial stub with instance parameters with iterations (2 parameters)" {
+        stub(2, PartialMock1API, PartialMock2API) [it, api1, api2 |
+            api1.toBeMocked
+            result = "(o1)"
+
+            api2.toBeMocked
+            maxTimes = 2
+            result = "(o2)"
+        ]
+        new PartialMock1API().toBeMocked => "(o1)"
+        new PartialMock2API().toBeMocked => "(o2)"
+        new PartialMock2API().toBeMocked => "(o2)"
+        new PartialMock2API().toBeMocked => "(o2)"
+        new PartialMock2API().toBeMocked => "(o2)"
+        new PartialMock1API().notToBeMocked throws NotMocked
+        new PartialMock2API().notToBeMocked throws NotMocked
+        new PartialMock2API().toBeMocked throws UnexpectedInvocation
+    }
+
+    fact "Dynamic partial stub instances with iterations (2 parameters)" {
+        val o1 = new PartialMock1API
+        val o2 = new PartialMock1API
+        stub(2, o1, o2) [
+            o1.toBeMocked
+            result = "(o1)"
+
+            o2.toBeMocked
+            result = "(o2)"
+        ]
+        o1.toBeMocked => "(o1)"
+        o2.toBeMocked => "(o2)"
     }
 
     fact "Dynamic partial stub (3 parameters)" {
-        val o1 = new Object
-        val o2 = new Object
-        val o3 = new Object
-        stub(o1, o2, o3) [
-            o1.toString
+        stub(PartialMock1API, PartialMock2API, PartialMock3API) [
+            new PartialMock1API().toBeMocked
             result = "(o1)"
 
-            o2.toString
+            new PartialMock2API().toBeMocked
             result = "(o2)"
 
-            o3.toString
+            new PartialMock3API().toBeMocked
             result = "(o3)"
         ]
-        o1.toString => "(o1)"
-        o2.toString => "(o2)"
-        o3.toString => "(o3)"
+
+        new PartialMock1API().toBeMocked => "(o1)"
+        new PartialMock2API().toBeMocked => "(o2)"
+        new PartialMock3API().toBeMocked => "(o3)"
+        new PartialMock1API().notToBeMocked throws NotMocked
+        new PartialMock2API().notToBeMocked throws NotMocked
+        new PartialMock3API().notToBeMocked throws NotMocked
+    }
+
+    fact "Dynamic partial stub with instance parameters (3 parameters)" {
+        stub(PartialMock1API, PartialMock2API, PartialMock3API) [it, api1, api2, api3 |
+            api1.toBeMocked
+            result = "(o1)"
+
+            api2.toBeMocked
+            result = "(o2)"
+
+            api3.toBeMocked
+            result = "(o3)"
+        ]
+        new PartialMock1API().toBeMocked => "(o1)"
+        new PartialMock2API().toBeMocked => "(o2)"
+        new PartialMock3API().toBeMocked => "(o3)"
+        new PartialMock1API().notToBeMocked throws NotMocked
+        new PartialMock2API().notToBeMocked throws NotMocked
+        new PartialMock3API().notToBeMocked throws NotMocked
+    }
+
+    fact "Dynamic partial stub instances (3 parameters)" {
+        val o1 = new PartialMock1API
+        val o2 = new PartialMock1API
+        val o3 = new PartialMock1API
+        stub(o1, o2, o3) [
+            o1.toBeMocked
+            result = "(o1)"
+
+            o2.toBeMocked
+            result = "(o2)"
+
+            o3.toBeMocked
+            result = "(o3)"
+        ]
+        o1.toBeMocked => "(o1)"
+        o2.toBeMocked => "(o2)"
+        o3.toBeMocked => "(o3)"
+    }
+
+
+    fact "Dynamic partial stub with iterations (3 parameters)" {
+        stub(2, PartialMock1API, PartialMock2API, PartialMock3API) [
+            new PartialMock1API().toBeMocked
+            result = "(o1)"
+
+            new PartialMock2API().toBeMocked
+            result = "(o2)"
+
+            new PartialMock3API().toBeMocked
+            maxTimes = 2
+            result = "(o3)"
+        ]
+
+        new PartialMock1API().toBeMocked => "(o1)"
+        new PartialMock2API().toBeMocked => "(o2)"
+        new PartialMock3API().toBeMocked => "(o3)"
+        new PartialMock3API().toBeMocked => "(o3)"
+        new PartialMock3API().toBeMocked => "(o3)"
+        new PartialMock3API().toBeMocked => "(o3)"
+        new PartialMock1API().notToBeMocked throws NotMocked
+        new PartialMock2API().notToBeMocked throws NotMocked
+        new PartialMock3API().notToBeMocked throws NotMocked
+        new PartialMock3API().toBeMocked throws UnexpectedInvocation
+    }
+
+    fact "Dynamic partial stub with instance parameters with iterations (3 parameters)" {
+        stub(2, PartialMock1API, PartialMock2API, PartialMock3API) [it, api1, api2, api3 |
+            api1.toBeMocked
+            result = "(o1)"
+
+            api2.toBeMocked
+            result = "(o2)"
+
+            api3.toBeMocked
+            result = "(o3)"
+            maxTimes = 2
+        ]
+        new PartialMock1API().toBeMocked => "(o1)"
+        new PartialMock2API().toBeMocked => "(o2)"
+        new PartialMock3API().toBeMocked => "(o3)"
+        new PartialMock3API().toBeMocked => "(o3)"
+        new PartialMock3API().toBeMocked => "(o3)"
+        new PartialMock3API().toBeMocked => "(o3)"
+        new PartialMock1API().notToBeMocked throws NotMocked
+        new PartialMock2API().notToBeMocked throws NotMocked
+        new PartialMock3API().notToBeMocked throws NotMocked
+        new PartialMock3API().toBeMocked throws UnexpectedInvocation
+    }
+
+    fact "Dynamic partial stub instances with iterations (3 parameters)" {
+        val o1 = new PartialMock1API
+        val o2 = new PartialMock1API
+        val o3 = new PartialMock1API
+        stub(2, o1, o2, o3) [
+            o1.toBeMocked
+            result = "(o1)"
+
+            o2.toBeMocked
+            result = "(o2)"
+
+            o3.toBeMocked
+            maxTimes = 2
+            result = "(o3)"
+        ]
+        o1.toBeMocked => "(o1)"
+        o2.toBeMocked => "(o2)"
+        o3.toBeMocked => "(o3)"
+        o3.toBeMocked => "(o3)"
+        o3.toBeMocked => "(o3)"
+        o3.toBeMocked => "(o3)"
+        o3.toBeMocked throws UnexpectedInvocation
     }
 
     fact "Dynamic partial stub (4 parameters)" {
-        val o1 = new Object
-        val o2 = new Object
-        val o3 = new Object
-        val o4 = new Object
-        stub(o1, o2, o3, o4) [
-            o1.toString
+        stub(PartialMock1API, PartialMock2API, PartialMock3API, PartialMock4API) [
+            new PartialMock1API().toBeMocked
             result = "(o1)"
 
-            o2.toString
+            new PartialMock2API().toBeMocked
             result = "(o2)"
 
-            o3.toString
+            new PartialMock3API().toBeMocked
             result = "(o3)"
 
-            o4.toString
+            new PartialMock4API().toBeMocked
             result = "(o4)"
         ]
-        o1.toString => "(o1)"
-        o2.toString => "(o2)"
-        o3.toString => "(o3)"
-        o4.toString => "(o4)"
+        new PartialMock1API().toBeMocked => "(o1)"
+        new PartialMock2API().toBeMocked => "(o2)"
+        new PartialMock3API().toBeMocked => "(o3)"
+        new PartialMock4API().toBeMocked => "(o4)"
+        new PartialMock1API().notToBeMocked throws NotMocked
+        new PartialMock2API().notToBeMocked throws NotMocked
+        new PartialMock3API().notToBeMocked throws NotMocked
+        new PartialMock4API().notToBeMocked throws NotMocked
+    }
+
+    fact "Dynamic partial stub with instance parameters (4 parameters)" {
+        stub(PartialMock1API, PartialMock2API, PartialMock3API, PartialMock4API) [it, api1, api2, api3, api4 |
+            api1.toBeMocked
+            result = "(o1)"
+
+            api2.toBeMocked
+            result = "(o2)"
+
+            api3.toBeMocked
+            result = "(o3)"
+
+            api4.toBeMocked
+            result = "(o4)"
+        ]
+        new PartialMock1API().toBeMocked => "(o1)"
+        new PartialMock2API().toBeMocked => "(o2)"
+        new PartialMock3API().toBeMocked => "(o3)"
+        new PartialMock4API().toBeMocked => "(o4)"
+        new PartialMock1API().notToBeMocked throws NotMocked
+        new PartialMock2API().notToBeMocked throws NotMocked
+        new PartialMock3API().notToBeMocked throws NotMocked
+        new PartialMock4API().notToBeMocked throws NotMocked
+    }
+
+    fact "Dynamic partial stub instances (4 parameters)" {
+        val o1 = new PartialMock1API
+        val o2 = new PartialMock1API
+        val o3 = new PartialMock1API
+        val o4 = new PartialMock1API
+        stub(o1, o2, o3, o4) [
+            o1.toBeMocked
+            result = "(o1)"
+
+            o2.toBeMocked
+            result = "(o2)"
+
+            o3.toBeMocked
+            result = "(o3)"
+
+            o4.toBeMocked
+            result = "(o4)"
+        ]
+        o1.toBeMocked => "(o1)"
+        o2.toBeMocked => "(o2)"
+        o3.toBeMocked => "(o3)"
+        o4.toBeMocked => "(o4)"
+    }
+
+
+    fact "Dynamic partial stub with iterations (4 parameters)" {
+        stub(2, PartialMock1API, PartialMock2API, PartialMock3API, PartialMock4API) [
+            new PartialMock1API().toBeMocked
+            result = "(o1)"
+
+            new PartialMock2API().toBeMocked
+            result = "(o2)"
+
+            new PartialMock3API().toBeMocked
+            result = "(o3)"
+
+            new PartialMock4API().toBeMocked
+            result = "(o4)"
+            maxTimes = 2
+        ]
+        new PartialMock1API().toBeMocked => "(o1)"
+        new PartialMock2API().toBeMocked => "(o2)"
+        new PartialMock3API().toBeMocked => "(o3)"
+        new PartialMock4API().toBeMocked => "(o4)"
+        new PartialMock4API().toBeMocked => "(o4)"
+        new PartialMock4API().toBeMocked => "(o4)"
+        new PartialMock4API().toBeMocked => "(o4)"
+        new PartialMock1API().notToBeMocked throws NotMocked
+        new PartialMock2API().notToBeMocked throws NotMocked
+        new PartialMock3API().notToBeMocked throws NotMocked
+        new PartialMock4API().notToBeMocked throws NotMocked
+        new PartialMock4API().toBeMocked throws UnexpectedInvocation
+    }
+
+    fact "Dynamic partial stub with instance parameters with iterations (4 parameters)" {
+        stub(2, PartialMock1API, PartialMock2API, PartialMock3API, PartialMock4API) [it, api1, api2, api3, api4 |
+            api1.toBeMocked
+            result = "(o1)"
+
+            api2.toBeMocked
+            result = "(o2)"
+
+            api3.toBeMocked
+            result = "(o3)"
+
+            api4.toBeMocked
+            maxTimes = 2
+            result = "(o4)"
+        ]
+        new PartialMock1API().toBeMocked => "(o1)"
+        new PartialMock2API().toBeMocked => "(o2)"
+        new PartialMock3API().toBeMocked => "(o3)"
+        new PartialMock4API().toBeMocked => "(o4)"
+        new PartialMock4API().toBeMocked => "(o4)"
+        new PartialMock4API().toBeMocked => "(o4)"
+        new PartialMock4API().toBeMocked => "(o4)"
+        new PartialMock1API().notToBeMocked throws NotMocked
+        new PartialMock2API().notToBeMocked throws NotMocked
+        new PartialMock3API().notToBeMocked throws NotMocked
+        new PartialMock4API().notToBeMocked throws NotMocked
+        new PartialMock4API().toBeMocked throws UnexpectedInvocation
+    }
+
+    fact "Dynamic partial stub instances with iterations (4 parameters)" {
+        val o1 = new PartialMock1API
+        val o2 = new PartialMock1API
+        val o3 = new PartialMock1API
+        val o4 = new PartialMock1API
+        stub(2, o1, o2, o3, o4) [
+            o1.toBeMocked
+            result = "(o1)"
+
+            o2.toBeMocked
+            result = "(o2)"
+
+            o3.toBeMocked
+            result = "(o3)"
+
+            o4.toBeMocked
+            result = "(o4)"
+            maxTimes = 2
+        ]
+        o1.toBeMocked => "(o1)"
+        o2.toBeMocked => "(o2)"
+        o3.toBeMocked => "(o3)"
+        o4.toBeMocked => "(o4)"
+        o4.toBeMocked => "(o4)"
+        o4.toBeMocked => "(o4)"
+        o4.toBeMocked => "(o4)"
+        o4.toBeMocked throws UnexpectedInvocation
     }
 
     fact "Dynamic partial stub (5 parameters)" {
-        val o1 = new Object
-        val o2 = new Object
-        val o3 = new Object
-        val o4 = new Object
-        val o5 = new Object
-        stub(o1, o2, o3, o4, o5) [
-            o1.toString
+        stub(PartialMock1API, PartialMock2API, PartialMock3API, PartialMock4API, PartialMock5API) [
+            new PartialMock1API().toBeMocked
             result = "(o1)"
 
-            o2.toString
+            new PartialMock2API().toBeMocked
             result = "(o2)"
 
-            o3.toString
+            new PartialMock3API().toBeMocked
             result = "(o3)"
 
-            o4.toString
+            new PartialMock4API().toBeMocked
             result = "(o4)"
 
-            o5.toString
+            new PartialMock5API().toBeMocked
             result = "(o5)"
         ]
-        o1.toString => "(o1)"
-        o2.toString => "(o2)"
-        o3.toString => "(o3)"
-        o4.toString => "(o4)"
-        o5.toString => "(o5)"
+        new PartialMock1API().toBeMocked => "(o1)"
+        new PartialMock2API().toBeMocked => "(o2)"
+        new PartialMock3API().toBeMocked => "(o3)"
+        new PartialMock4API().toBeMocked => "(o4)"
+        new PartialMock5API().toBeMocked => "(o5)"
+        new PartialMock1API().notToBeMocked throws NotMocked
+        new PartialMock2API().notToBeMocked throws NotMocked
+        new PartialMock3API().notToBeMocked throws NotMocked
+        new PartialMock4API().notToBeMocked throws NotMocked
+        new PartialMock5API().notToBeMocked throws NotMocked
     }
 
-    fact "Dynamic partial stub (X parameters)" {
-        val o1 = new Object
-        val o2 = new Object
-        val o3 = new Object
-        val o4 = new Object
-        val o5 = new Object
-        val o6 = new Object
-        stub([
-            o1.toString
+    fact "Dynamic partial stub with instance parameters (5 parameters)" {
+        stub(PartialMock1API, PartialMock2API, PartialMock3API, PartialMock4API, PartialMock5API) [it, api1, api2, api3, api4, api5 |
+            api1.toBeMocked
             result = "(o1)"
 
-            o2.toString
+            api2.toBeMocked
             result = "(o2)"
 
-            o3.toString
+            api3.toBeMocked
             result = "(o3)"
 
-            o4.toString
+            api4.toBeMocked
             result = "(o4)"
 
-            o5.toString
+            api5.toBeMocked
+            result = "(o5)"
+        ]
+        new PartialMock1API().toBeMocked => "(o1)"
+        new PartialMock2API().toBeMocked => "(o2)"
+        new PartialMock3API().toBeMocked => "(o3)"
+        new PartialMock4API().toBeMocked => "(o4)"
+        new PartialMock5API().toBeMocked => "(o5)"
+        new PartialMock1API().notToBeMocked throws NotMocked
+        new PartialMock2API().notToBeMocked throws NotMocked
+        new PartialMock3API().notToBeMocked throws NotMocked
+        new PartialMock4API().notToBeMocked throws NotMocked
+        new PartialMock5API().notToBeMocked throws NotMocked
+    }
+
+    fact "Dynamic partial stub instances (5 parameters)" {
+        val o1 = new PartialMock1API
+        val o2 = new PartialMock1API
+        val o3 = new PartialMock1API
+        val o4 = new PartialMock1API
+        val o5 = new PartialMock1API
+        stub(o1, o2, o3, o4, o5) [
+            o1.toBeMocked
+            result = "(o1)"
+
+            o2.toBeMocked
+            result = "(o2)"
+
+            o3.toBeMocked
+            result = "(o3)"
+
+            o4.toBeMocked
+            result = "(o4)"
+
+            o5.toBeMocked
+            result = "(o5)"
+        ]
+        o1.toBeMocked => "(o1)"
+        o2.toBeMocked => "(o2)"
+        o3.toBeMocked => "(o3)"
+        o4.toBeMocked => "(o4)"
+        o5.toBeMocked => "(o5)"
+    }
+
+   fact "Dynamic partial stub with iterations (5 parameters)" {
+        stub(2, PartialMock1API, PartialMock2API, PartialMock3API, PartialMock4API, PartialMock5API) [
+            new PartialMock1API().toBeMocked
+            result = "(o1)"
+
+            new PartialMock2API().toBeMocked
+            result = "(o2)"
+
+            new PartialMock3API().toBeMocked
+            result = "(o3)"
+
+            new PartialMock4API().toBeMocked
+            result = "(o4)"
+
+            new PartialMock5API().toBeMocked
+            result = "(o5)"
+            maxTimes = 2
+        ]
+        new PartialMock1API().toBeMocked => "(o1)"
+        new PartialMock2API().toBeMocked => "(o2)"
+        new PartialMock3API().toBeMocked => "(o3)"
+        new PartialMock4API().toBeMocked => "(o4)"
+        new PartialMock5API().toBeMocked => "(o5)"
+        new PartialMock5API().toBeMocked => "(o5)"
+        new PartialMock5API().toBeMocked => "(o5)"
+        new PartialMock5API().toBeMocked => "(o5)"
+        new PartialMock1API().notToBeMocked throws NotMocked
+        new PartialMock2API().notToBeMocked throws NotMocked
+        new PartialMock3API().notToBeMocked throws NotMocked
+        new PartialMock4API().notToBeMocked throws NotMocked
+        new PartialMock5API().notToBeMocked throws NotMocked
+        new PartialMock5API().toBeMocked throws UnexpectedInvocation
+    }
+
+    fact "Dynamic partial stub with instance parameters with iterations (5 parameters)" {
+        stub(2, PartialMock1API, PartialMock2API, PartialMock3API, PartialMock4API, PartialMock5API) [it, api1, api2, api3, api4, api5 |
+            api1.toBeMocked
+            result = "(o1)"
+
+            api2.toBeMocked
+            result = "(o2)"
+
+            api3.toBeMocked
+            result = "(o3)"
+
+            api4.toBeMocked
+            result = "(o4)"
+
+            api5.toBeMocked
+            result = "(o5)"
+            maxTimes = 2
+        ]
+        new PartialMock1API().toBeMocked => "(o1)"
+        new PartialMock2API().toBeMocked => "(o2)"
+        new PartialMock3API().toBeMocked => "(o3)"
+        new PartialMock4API().toBeMocked => "(o4)"
+        new PartialMock5API().toBeMocked => "(o5)"
+        new PartialMock5API().toBeMocked => "(o5)"
+        new PartialMock5API().toBeMocked => "(o5)"
+        new PartialMock5API().toBeMocked => "(o5)"
+        new PartialMock1API().notToBeMocked throws NotMocked
+        new PartialMock2API().notToBeMocked throws NotMocked
+        new PartialMock3API().notToBeMocked throws NotMocked
+        new PartialMock4API().notToBeMocked throws NotMocked
+        new PartialMock5API().notToBeMocked throws NotMocked
+        new PartialMock5API().toBeMocked throws UnexpectedInvocation
+    }
+
+    fact "Dynamic partial stub instances with iterations (5 parameters)" {
+        val o1 = new PartialMock1API
+        val o2 = new PartialMock1API
+        val o3 = new PartialMock1API
+        val o4 = new PartialMock1API
+        val o5 = new PartialMock1API
+        stub(2, o1, o2, o3, o4, o5) [
+            o1.toBeMocked
+            result = "(o1)"
+
+            o2.toBeMocked
+            result = "(o2)"
+
+            o3.toBeMocked
+            result = "(o3)"
+
+            o4.toBeMocked
+            result = "(o4)"
+
+            o5.toBeMocked
+            result = "(o5)"
+            maxTimes = 2 // Get multiplied by iteration count (2)
+        ]
+        o1.toBeMocked => "(o1)"
+        o2.toBeMocked => "(o2)"
+        o3.toBeMocked => "(o3)"
+        o4.toBeMocked => "(o4)"
+        o5.toBeMocked => "(o5)"
+        o5.toBeMocked => "(o5)"
+        o5.toBeMocked => "(o5)"
+        o5.toBeMocked => "(o5)"
+        o5.toBeMocked throws UnexpectedInvocation
+    }
+
+    fact "Dynamic partial stub instances (X parameters)" {
+        val o1 = new PartialMock1API
+        val o2 = new PartialMock1API
+        val o3 = new PartialMock1API
+        val o4 = new PartialMock1API
+        val o5 = new PartialMock1API
+        val o6 = new PartialMock1API
+        stub([
+            o1.toBeMocked
+            result = "(o1)"
+
+            o2.toBeMocked
+            result = "(o2)"
+
+            o3.toBeMocked
+            result = "(o3)"
+
+            o4.toBeMocked
+            result = "(o4)"
+
+            o5.toBeMocked
             result = "(o5)"
 
-            o6.toString
+            o6.toBeMocked
             result = "(o6)"
         ], o1, o2, o3, o4, o5, o6)
-        o1.toString => "(o1)"
-        o2.toString => "(o2)"
-        o3.toString => "(o3)"
-        o4.toString => "(o4)"
-        o5.toString => "(o5)"
-        o6.toString => "(o6)"
+        o1.toBeMocked => "(o1)"
+        o2.toBeMocked => "(o2)"
+        o3.toBeMocked => "(o3)"
+        o4.toBeMocked => "(o4)"
+        o5.toBeMocked => "(o5)"
+        o6.toBeMocked => "(o6)"
     }
 
-    fact "stub with iterations and partial stubbing (1 parameters)" {
-        val o1 = new Object
-        stub(2, o1) [
-            o1.toString
-            result = "(o1)"
-        ]
-        o1.toString => "(o1)"
-    }
-
-    fact "stub with iterations and partial stubbing (2 parameters)" {
-        val o1 = new Object
-        val o2 = new Object
-        stub(2, o1, o2) [
-            o1.toString
+    fact "Dynamic partial stub instances with iterations (X parameters)" {
+        val o1 = new PartialMock1API
+        val o2 = new PartialMock1API
+        val o3 = new PartialMock1API
+        val o4 = new PartialMock1API
+        val o5 = new PartialMock1API
+        val o6 = new PartialMock1API
+        stub(2, [
+            o1.toBeMocked
             result = "(o1)"
 
-            o2.toString
-            result = "(o2)"
-        ]
-        o1.toString => "(o1)"
-        o2.toString => "(o2)"
-    }
-
-    fact "stub with iterations and partial stubbing (3 parameters)" {
-        val o1 = new Object
-        val o2 = new Object
-        val o3 = new Object
-        stub(2, o1, o2, o3) [
-            o1.toString
-            result = "(o1)"
-
-            o2.toString
+            o2.toBeMocked
             result = "(o2)"
 
-            o3.toString
-            result = "(o3)"
-        ]
-        o1.toString => "(o1)"
-        o2.toString => "(o2)"
-        o3.toString => "(o3)"
-    }
-
-    fact "stub with iterations and partial stubbing (4 parameters)" {
-        val o1 = new Object
-        val o2 = new Object
-        val o3 = new Object
-        val o4 = new Object
-        stub(2, o1, o2, o3, o4) [
-            o1.toString
-            result = "(o1)"
-
-            o2.toString
-            result = "(o2)"
-
-            o3.toString
+            o3.toBeMocked
             result = "(o3)"
 
-            o4.toString
-            result = "(o4)"
-        ]
-        o1.toString => "(o1)"
-        o2.toString => "(o2)"
-        o3.toString => "(o3)"
-        o4.toString => "(o4)"
-    }
-
-    fact "stub with iterations and partial stubbing (5 parameters)" {
-        val o1 = new Object
-        val o2 = new Object
-        val o3 = new Object
-        val o4 = new Object
-        val o5 = new Object
-        stub(2, o1, o2, o3, o4, o5) [
-            o1.toString
-            result = "(o1)"
-
-            o2.toString
-            result = "(o2)"
-
-            o3.toString
-            result = "(o3)"
-
-            o4.toString
+            o4.toBeMocked
             result = "(o4)"
 
-            o5.toString
-            result = "(o5)"
-        ]
-        o1.toString => "(o1)"
-        o2.toString => "(o2)"
-        o3.toString => "(o3)"
-        o4.toString => "(o4)"
-        o5.toString => "(o5)"
-    }
-
-    fact "stub with iterations and partial stubbing (X parameters)" {
-        val o1 = new Object
-        val o2 = new Object
-        val o3 = new Object
-        val o4 = new Object
-        val o5 = new Object
-        val o6 = new Object
-        stub([
-            o1.toString
-            result = "(o1)"
-
-            o2.toString
-            result = "(o2)"
-
-            o3.toString
-            result = "(o3)"
-
-            o4.toString
-            result = "(o4)"
-
-            o5.toString
+            o5.toBeMocked
             result = "(o5)"
 
-            o6.toString
+            o6.toBeMocked
+            maxTimes = 2 // Get multiplied by iteration count (2)
             result = "(o6)"
-        ], 2, o1, o2, o3, o4, o5, o6)
-        o1.toString => "(o1)"
-        o2.toString => "(o2)"
-        o3.toString => "(o3)"
-        o4.toString => "(o4)"
-        o5.toString => "(o5)"
-        o6.toString => "(o6)"
+        ], o1, o2, o3, o4, o5, o6)
+        o1.toBeMocked => "(o1)"
+        o2.toBeMocked => "(o2)"
+        o3.toBeMocked => "(o3)"
+        o4.toBeMocked => "(o4)"
+        o5.toBeMocked => "(o5)"
+        o6.toBeMocked => "(o6)"
+        o6.toBeMocked => "(o6)"
+        o6.toBeMocked => "(o6)"
+        o6.toBeMocked => "(o6)"
+        o6.toBeMocked throws UnexpectedInvocation
     }
 }

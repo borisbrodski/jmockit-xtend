@@ -240,8 +240,17 @@ JMockit Tutorial: http://jmockit.googlecode.com/svn/trunk/www/tutorial/BehaviorB
 The `mock(classOrObject) []` method can be used for the partial mocking.
 
 ```java
-mock(typeof(MyClass)) [
-    service.call1
+mock(MyClass) [
+    new MyClass().call1
+]
+```
+
+You can also grab a mocked instance of the partial mocked class using closure parameter(s):
+
+```java
+mock(Api1, Api2) [it, api1, api2 |
+    api1.call
+    api2.call
 ]
 ```
 
@@ -267,6 +276,15 @@ The `stub(classOrObject) []` method can be used for non-strict the partial mocki
 ```java
 stub(MyClass) [
     service.call1
+]
+```
+
+You can also grab a mocked instance of the partial stubbed class using closure parameter(s):
+
+```java
+stub(Api1, Api2) [it, api1, api2 |
+    api1.call
+    api2.call
 ]
 ```
 
