@@ -29,6 +29,7 @@ If you have 12 minutes to spare, you can watch the new screen cast on the [Xtext
   - [Dynamic partial mocking using `mock(class) []`](#DynamicPartialMockingWithMock)
   - [Dynamic partial mocking using `stub(class) []`](#DynamicPartialMockingWithStub)
   - [Specifying count of iterations for `mock`/`stub` expectations](#CountOfIterationWithMockAndStub)
+ - [Creating fake instances using `ins(class)`](#CreateFakeInstance)
  - [Using `result=`](#UsingResult)
  - [Xtend-style dynamic result using `result= []`](#XtendStyleDynamicResult)
  - [Using `returns()`](#UsingReturns)
@@ -331,6 +332,33 @@ stub([
     returns(1, 2, 3)
 ], 10, Class1, obj2, Class3, obj4, obj5, obj6, obj7, Class8)
 ```
+
+<a href="#top">&#8593; top</a>
+
+<a name="CreateFakeInstance"></a>
+### Creating fake instances using `ins(class)`
+
+In `mock[...]` and `stub[...]` expectations blocks you can get a fake instance of any object
+using `ins(class)` method. This is particularly useful for partially mocking a class without handy constructor:
+
+```java
+stub(ClassWithoutSuitableConstructor) [
+	ins(ClassWithoutSuitableConstructor).method
+	result = 1
+]
+```
+
+Alternatively, you can use closure parameters as described in "Dynamic partial mocking" section:
+
+```java
+stub(ClassWithoutSuitableConstructor) [it, instance|
+	instance.method
+	result = 1
+]
+```
+
+*Please note:* instances created with `ins(class)` method are not initialized. Calling non-mocked methods
+on such instances my cause unexpected behavior!
 
 <a href="#top">&#8593; top</a>
 

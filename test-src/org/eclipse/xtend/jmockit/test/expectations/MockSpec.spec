@@ -4,6 +4,7 @@ import mockit.Mocked
 import mockit.internal.UnexpectedInvocation
 
 import static extension org.eclipse.xtend.jmockit.JMockitExtension.*
+import org.hamcrest.Matchers
 
 describe "mock behaves like Expectations" {
 
@@ -52,6 +53,11 @@ describe "mock behaves like Expectations" {
             expectationsAPI.returnSelf throws UnexpectedInvocation
         }
 
+		fact "Get faked instance of any class" {
+			mock [
+				ins(ClassWithNoSuitableConstructor) => Matchers.instanceOf(ClassWithNoSuitableConstructor)
+			]
+		}
     }
 
     fact "Partially mocking" {

@@ -2,6 +2,7 @@ package org.eclipse.xtend.jmockit.test.expectations
 
 import mockit.Mocked
 import mockit.internal.UnexpectedInvocation
+import org.hamcrest.Matchers
 
 import static org.eclipse.xtend.jmockit.JMockitExtension.*
 
@@ -43,6 +44,12 @@ describe "stub behaves like NonStrictExpectations" {
         	expectationsAPI.returnString throws UnexpectedInvocation
             expectationsAPI.returnSelf throws UnexpectedInvocation // TODO See JMockit issue #66
         }
+
+		fact "Get faked instance of any class" {
+			stub [
+				ins(ClassWithNoSuitableConstructor) => Matchers.instanceOf(ClassWithNoSuitableConstructor)
+			]
+		}
     }
 
     fact "Partially stubbing" {

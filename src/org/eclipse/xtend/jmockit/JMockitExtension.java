@@ -470,7 +470,7 @@ public class JMockitExtension {
 
 
 
-    private static <T> T ins(Class<T> clazz) {
+    public static <T> T ins(Class<T> clazz) {
     	return ConstructorReflection.newUninitializedInstance(clazz);
     }
 }
