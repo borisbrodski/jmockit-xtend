@@ -42,6 +42,11 @@ import mockit.ExpectationsDelegate;
 import mockit.NonStrictExpectations;
 import mockit.internal.util.ConstructorReflection;
 
+/**
+ * Collection of the extension methods adding JMockit support to the Xtend.
+ *
+ * @author Boris Brodski
+ */
 public class JMockitExtension {
     public static abstract class XtendNonStrictExpectations extends NonStrictExpectations {
         public abstract void apply(ExpectationsDelegate delegate);
