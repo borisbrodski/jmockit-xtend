@@ -26,7 +26,9 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
 	</licenses>
 
 	<scm>
-		<url>https://github.com/borisbrodski/jmockit-xtend.git</url>
+		<connection>scm:git:git@github.com:borisbrodski/jmockit-xtend.git</connection>
+		<url>scm:git:git@github.com:borisbrodski/jmockit-xtend.git</url>
+		<developerConnection>scm:git:git@github.com:borisbrodski/jmockit-xtend.git</developerConnection>
 	</scm>
 
 	<developers>
