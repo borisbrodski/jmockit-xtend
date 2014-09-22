@@ -74,19 +74,19 @@ and then simply add the downloaded file to your java project.
 
 <a href="#top">&#8593; top</a>
 
-<a name="NewCoolXtendAPI"></a>
-## New cool Xtend-driven API enhancements
-
-Cool things first. Here is a brief overview of the new cool Xtend-powered API
-
-<a href="#top">&#8593; top</a>
-
 <a name="VersionInfo"></a>
 ## Version info
 
 | Date       | Version | JMockit versions | Xtend versions |
 | ---------- | ------- |:-----------------| -------------- |
 | 09/22/2014 | 0.2     | [1.10,1.11]      | 2.6.0          |
+
+<a href="#top">&#8593; top</a>
+
+<a name="NewCoolXtendAPI"></a>
+## New cool Xtend-driven API enhancements
+
+Cool things first. Here is a brief overview of the new cool Xtend-powered API
 
 <a href="#top">&#8593; top</a>
 
