@@ -3,9 +3,10 @@
 Collection of the extension methods adding [JMockit](http://jmockit.googlecode.com/)
 support to the [Xtend](http://www.eclipse.org/xtend/).
 
-Versions:
-- Xtend: 2.6.0
-- JMockit: 1.10
+Current release: ([more info](#VersionInfo))
+- JMockit-Xtend: 0.2
+  - Xtend: 2.6.0
+  - JMockit: 1.10-1.11
 
 ## Screencast about JMockit-Xtend
 
@@ -16,6 +17,7 @@ If you have 12 minutes to spare, you can watch the new screen cast on the [Xtext
 
 - [Introduction](#Introduction)
 - [Download](#Download)
+- [Version info](#VersionInfo)
 - [New cool Xtend-driven API enhancements](#NewCoolXtendAPI)
  - [Simple mock definitions](#SimpleMockDefinitions)
  - [`any` without cast](#AnyWithoutCast)
@@ -65,6 +67,7 @@ and [Jnario](http://jnario.org/) tests.
 <a name="Download"></a>
 ## Download
 
+
 You can download the JMockitExtension.java from the master branch
 [here](https://raw.github.com/borisbrodski/jmockit-xtend/master/src/org/eclipse/xtend/jmockit/JMockitExtension.java)
 and then simply add the downloaded file to your java project.
@@ -75,6 +78,15 @@ and then simply add the downloaded file to your java project.
 ## New cool Xtend-driven API enhancements
 
 Cool things first. Here is a brief overview of the new cool Xtend-powered API
+
+<a href="#top">&#8593; top</a>
+
+<a name="VersionInfo"></a>
+## Version info
+
+| Date       | Version | JMockit versions | Xtend versions |
+| ---------- | ------- |:-----------------| -------------- |
+| 09/22/2014 | 0.2     | [1.10,1.11]      | 2.6.0          |
 
 <a href="#top">&#8593; top</a>
 
