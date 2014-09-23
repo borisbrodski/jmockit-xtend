@@ -61,63 +61,63 @@ public final class ExpectationsDelegate {
 
     @SuppressWarnings({"unused", "unchecked"})
     public void setResult(final Object object) {
-      	if (object instanceof Function0<?>) {
-      		ActiveInvocations.addResult(new Delegate<Object>() {
-				Object method() {
-					return ((Function0<?>) object).apply();
-              	}
-      		});
-      		return;
-      	}
-      	if (object instanceof Function1) {
-      		ActiveInvocations.addResult(new Delegate<Object>() {
-      			Object method(Object p1) {
-      				return ((Function1<Object, ?>) object).apply(p1);
-      			}
-      		});
-      		return;
-      	}
-      	if (object instanceof Function2) {
-      		ActiveInvocations.addResult(new Delegate<Object>() {
-      			Object method(Object p1, Object p2) {
-      				return ((Function2<Object, Object, ?>) object).apply(p1, p2);
-      			}
-      		});
-      		return;
-      	}
-      	if (object instanceof Function3) {
-      		ActiveInvocations.addResult(new Delegate<Object>() {
-      			Object method(Object p1, Object p2, Object p3) {
-      				return ((Function3<Object, Object, Object, ?>) object).apply(p1, p2, p3);
-      			}
-      		});
-      		return;
-      	}
-      	if (object instanceof Function4) {
-      		ActiveInvocations.addResult(new Delegate<Object>() {
-      			Object method(Object p1, Object p2, Object p3, Object p4) {
-      				return ((Function4<Object, Object, Object, Object, ?>) object).apply(p1, p2, p3, p4);
-      			}
-      		});
-      		return;
-      	}
-      	if (object instanceof Function5) {
-      		ActiveInvocations.addResult(new Delegate<Object>() {
-      			Object method(Object p1, Object p2, Object p3, Object p4, Object p5) {
-      				return ((Function5<Object, Object, Object, Object, Object, ?>) object).apply(p1, p2, p3, p4, p5);
-      			}
-      		});
-      		return;
-      	}
-      	if (object instanceof Function6) {
-      		ActiveInvocations.addResult(new Delegate<Object>() {
-      			Object method(Object p1, Object p2, Object p3, Object p4, Object p5, Object p6) {
-      				return ((Function6<Object, Object, Object, Object, Object, Object, ?>) object).apply(p1, p2, p3, p4, p5, p6);
-      			}
-      		});
-      		return;
-      	}
-    	ActiveInvocations.addResult(object);
+          if (object instanceof Function0<?>) {
+              ActiveInvocations.addResult(new Delegate<Object>() {
+                Object method() {
+                    return ((Function0<?>) object).apply();
+                  }
+              });
+              return;
+          }
+          if (object instanceof Function1) {
+              ActiveInvocations.addResult(new Delegate<Object>() {
+                  Object method(Object p1) {
+                      return ((Function1<Object, ?>) object).apply(p1);
+                  }
+              });
+              return;
+          }
+          if (object instanceof Function2) {
+              ActiveInvocations.addResult(new Delegate<Object>() {
+                  Object method(Object p1, Object p2) {
+                      return ((Function2<Object, Object, ?>) object).apply(p1, p2);
+                  }
+              });
+              return;
+          }
+          if (object instanceof Function3) {
+              ActiveInvocations.addResult(new Delegate<Object>() {
+                  Object method(Object p1, Object p2, Object p3) {
+                      return ((Function3<Object, Object, Object, ?>) object).apply(p1, p2, p3);
+                  }
+              });
+              return;
+          }
+          if (object instanceof Function4) {
+              ActiveInvocations.addResult(new Delegate<Object>() {
+                  Object method(Object p1, Object p2, Object p3, Object p4) {
+                      return ((Function4<Object, Object, Object, Object, ?>) object).apply(p1, p2, p3, p4);
+                  }
+              });
+              return;
+          }
+          if (object instanceof Function5) {
+              ActiveInvocations.addResult(new Delegate<Object>() {
+                  Object method(Object p1, Object p2, Object p3, Object p4, Object p5) {
+                      return ((Function5<Object, Object, Object, Object, Object, ?>) object).apply(p1, p2, p3, p4, p5);
+                  }
+              });
+              return;
+          }
+          if (object instanceof Function6) {
+              ActiveInvocations.addResult(new Delegate<Object>() {
+                  Object method(Object p1, Object p2, Object p3, Object p4, Object p5, Object p6) {
+                      return ((Function6<Object, Object, Object, Object, Object, Object, ?>) object).apply(p1, p2, p3, p4, p5, p6);
+                  }
+              });
+              return;
+          }
+        ActiveInvocations.addResult(object);
     }
     public void setResultInt(int intValue) {
         setResult(intValue);
@@ -351,8 +351,8 @@ public final class ExpectationsDelegate {
     }
 
     public <T> T withDelegate(T arg, Delegate<T> delegateObjectWithInvocationHandlerMethod) {
-    	expectations.with(delegateObjectWithInvocationHandlerMethod);
-    	return arg;
+        expectations.with(delegateObjectWithInvocationHandlerMethod);
+        return arg;
     }
 
     public <T> T withAny(T t) {
@@ -360,59 +360,59 @@ public final class ExpectationsDelegate {
     }
 
     public <T> T withEqual(T value) {
-    	return expectations.withEqual(value);
+        return expectations.withEqual(value);
     }
 
     public float withEqual(float value, double delta) {
-    	return expectations.withEqual(value, delta);
+        return expectations.withEqual(value, delta);
     }
 
     public double withEqual(double value, double delta) {
-    	return expectations.withEqual(value, delta);
+        return expectations.withEqual(value, delta);
     }
 
     public <T> T withInstanceLike(T value) {
-    	return expectations.withInstanceLike(value);
+        return expectations.withInstanceLike(value);
     }
 
     public <T> T withInstanceOf(Class<T> value) {
-    	return expectations.withInstanceOf(value);
+        return expectations.withInstanceOf(value);
     }
 
     public <T extends CharSequence> T withMatch(T regex) {
-    	return expectations.withMatch(regex);
+        return expectations.withMatch(regex);
     }
 
     public <T> T withNotEqual(T value) {
-    	return expectations.withNotEqual(value);
+        return expectations.withNotEqual(value);
     }
 
     public <T> T withNotNull() {
-    	return expectations.withNotNull();
+        return expectations.withNotNull();
     }
 
     public <T> T withNull() {
-    	return expectations.withNull();
+        return expectations.withNull();
     }
 
     public <T extends CharSequence> T withPrefix(T value) {
-    	return expectations.withPrefix(value);
+        return expectations.withPrefix(value);
     }
 
     public <T> T withSameInstance(T value) {
-    	return expectations.withSameInstance(value);
+        return expectations.withSameInstance(value);
     }
 
     public <T extends CharSequence> T withSubstring(T value) {
-    	return expectations.withSubstring(value);
+        return expectations.withSubstring(value);
     }
 
     public <T extends CharSequence> T withSuffix(T value) {
-    	return expectations.withSuffix(value);
+        return expectations.withSuffix(value);
     }
 
     public <T> T onInstance(T mockedInstance) {
-    	return expectations.onInstance(mockedInstance);
+        return expectations.onInstance(mockedInstance);
     }
 
     private Object[] toObjectArray(int[] array) {
