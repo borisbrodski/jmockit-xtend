@@ -59,18 +59,24 @@ original JMockit API to the Xtend but also [enhance the API](#NewCoolXtendAPI) u
 
 The optimal use of the JMockit-Xtend can to achieved together with [Jnario](http://jnario.org/).
 
-JMockit-Xtend consists of a single java file [JMockitExtension.java](https://raw.github.com/borisbrodski/jmockit-xtend/master/src/org/eclipse/xtend/jmockit/JMockitExtension.java),
-and [Jnario](http://jnario.org/) tests.
 
 <a href="#top">&#8593; top</a>
 
 <a name="Download"></a>
 ## Download
 
+You can download JMockit-Xtend directly from Maven Central repository [here](http://search.maven.org/#search%7Cga%7C1%7Ca%3A%22jmockit-xtend%22)
+or just add it as a maven dependency.
 
-You can download the JMockitExtension.java from the master branch
-[here](https://raw.github.com/borisbrodski/jmockit-xtend/master/src/org/eclipse/xtend/jmockit/JMockitExtension.java)
-and then simply add the downloaded file to your java project.
+```xml
+<dependency>
+    <groupId>com.github.borisbrodski</groupId>
+    <artifactId>jmockit-xtend</artifactId>
+    <version>...</version>
+</dependency>
+```
+
+*WARNING:* JMockit needs to be before JUnit on your classpath.
 
 <a href="#top">&#8593; top</a>
 
